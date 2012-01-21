@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>eu.akka</groupId>
-		<artifactId>AkkaToulouseSuperPom</artifactId>
-		<version>1.0</version>
-	</parent>
-
 	<groupId>org.ilaborie.lged</groupId>
 	<artifactId>org.ilaborie.lged</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Exemple d'application JavaEE</name>
-	<description>Exemple d'application JavaEE pour AKKA
-Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
-	<organization>
-		<name>AKKA informatique &amp; Syst?mes</name>
-		<url>http://www.akka.eu</url>
-	</organization>
+	<name>Local GED</name>
+	<description>A local GED application</description>
 	<inceptionYear>2012</inceptionYear>
 
 	<properties>
@@ -38,9 +28,12 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 		<log4j.version>1.2.16</log4j.version>
 
 		<!-- Utils -->
-		<guava.version>11.0</guava.version>
+		<guava.version>11.0.1</guava.version>
 
-		<!-- Versions des plugins maven -->
+		<!-- Indexing with SolR -->
+		<solr.version>3.5.0</solr.version>
+
+		<!-- Maven Plugins -->
 		<maven.compiler.version>2.3.2</maven.compiler.version>
 		<maven.jar.version>2.3.1</maven.jar.version>
 		<maven.war.version>2.1.1</maven.war.version>
@@ -58,7 +51,7 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 		<maven.checkstyle.version>2.8</maven.checkstyle.version>
 		<maven.pmd.version>2.6</maven.pmd.version>
 
-		<!-- Encodage des fichiers -->
+		<!-- File encoding -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -67,14 +60,14 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 	</properties>
 
 	<scm>
-		<!-- TODO ? voir quand le projet sera en conf -->
+		<!-- TODO -->
 	</scm>
 
 	<build>
-		<!-- D?finition des configurations et version des plugins maven -->
+		<!-- Maven Plugins configuration -->
 		<pluginManagement>
 			<plugins>
-				<!-- Compilation -->
+				<!-- Compile -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -98,7 +91,7 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 					<version>${maven.jar.version}</version>
 					<configuration>
 						<archive>
-							<addMavenDescriptor/>
+							<addMavenDescriptor />
 							<manifest>
 								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
@@ -112,7 +105,7 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 					<version>${maven.war.version}</version>
 					<configuration>
 						<archive>
-							<addMavenDescriptor/>
+							<addMavenDescriptor />
 							<manifest>
 								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
@@ -135,7 +128,7 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 					<configuration>
 						<defaultLibBundleDir>lib</defaultLibBundleDir>
 						<archive>
-							<addMavenDescriptor/>
+							<addMavenDescriptor />
 							<manifest>
 								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
@@ -171,19 +164,19 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 						</archive>
 					</configuration>
 				</plugin>
-				<!-- Cr?ation du packaging des sources -->
+				<!-- Source -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
 					<version>${maven.source.version}</version>
 				</plugin>
-				<!-- Contr?le de l'environement -->
+				<!-- Check Env -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-enforcer-plugin</artifactId>
 					<version>${maven.enforcer.version}</version>
 				</plugin>
-				<!-- Reporting -->
+				<!-- Reports -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
@@ -202,7 +195,7 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 						<linkXRef>false</linkXRef>
 					</configuration>
 				</plugin>
-				<!-- G?n?ration des projets Eclipse -->
+				<!-- Eclipse Projects -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-eclipse-plugin</artifactId>
@@ -221,9 +214,9 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 			</plugins>
 		</pluginManagement>
 
-		<!-- Plugins par d?faut -->
+		<!-- Default Plugins -->
 		<plugins>
-			<!-- Contr?le de l'environement -->
+			<!-- Checks -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
@@ -238,55 +231,68 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 				<configuration>
 					<rules>
 						<requireMavenVersion>
-							<version>[3.0.0,)</version> <!-- N?cessite un Maven 3+ -->
-							<message>'Maven 3+ requis"</message>
+							<version>[3.0.0,)</version> <!-- Maven 3+ -->
 						</requireMavenVersion>
 						<requireJavaVersion>
-							<version>1.6.0</version> <!-- JDK6 obligatoire -->
-							<message>'Java 6+ requis"</message>
+							<version>1.6.0</version> <!-- JDK6 -->
 						</requireJavaVersion>
 						<requireProperty>
-							<property>env.JAVA_HOME</property> <!-- D?finir le JAVA_HOME -->
-							<message>"Le JAVA_HOME doit ?tre d?finit pour la compilation"</message>
+							<property>env.JAVA_HOME</property> <!-- JAVA_HOME -->
 						</requireProperty>
 					</rules>
 				</configuration>
 			</plugin>
-			<!-- G?n?ration du jar des sources -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- G?n?ration de la Javadoc -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 
-	<!-- Modules -->
-
-	<!-- Gestion des d?pendances -->
+	<!-- Dependency Management -->
 	<dependencyManagement>
 		<dependencies>
-			<!-- D?pendances sur JavaEE 6 -->
+			<!-- guava -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
+			</dependency>
+
+			<!-- Solr -->
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-solrj</artifactId>
+				<version>${solr.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-dataimporthandler</artifactId>
+				<version>${solr.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-dataimporthandler-extras</artifactId>
+				<version>${solr.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-core</artifactId>
+				<version>${solr.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-velocity</artifactId>
+				<version>${solr.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-langid</artifactId>
+				<version>${solr.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.solr</groupId>
+				<artifactId>solr-cell</artifactId>
+				<version>${solr.version}</version>
+			</dependency>
+
+			<!-- JavaEE 6 -->
 			<dependency>
 				<groupId>org.jboss.spec</groupId>
 				<artifactId>jboss-javaee-6.0</artifactId>
@@ -300,18 +306,7 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 					</exclusion>
 				</exclusions>
 			</dependency>
-			<!-- guava -->
-			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-				<version>${guava.version}</version>
-			</dependency>
-			<!-- JBoss AS 7 -->
-			<dependency>
-				<groupId>org.jboss.as</groupId>
-				<artifactId>jboss-as-arquillian-container-remote</artifactId>
-				<version>${jboss.as.version}</version>
-			</dependency>
+
 			<!-- Arquillian -->
 			<dependency>
 				<groupId>org.jboss.arquillian</groupId>
@@ -325,33 +320,51 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 				<artifactId>arquillian-protocol-servlet</artifactId>
 				<version>${arquillian.version}</version>
 			</dependency>
+
+			<!-- JBoss AS 7 -->
+			<dependency>
+				<groupId>org.jboss.as</groupId>
+				<artifactId>jboss-as-arquillian-container-remote</artifactId>
+				<version>${jboss.as.version}</version>
+			</dependency>
+
+			<!-- Logging -->
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
-	<!-- D?pendances communes -->
+	<!-- Commons Dependencies -->
 	<dependencies>
 		<!-- Logs: slf4j avec Log4j -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
-			<version>${slf4j.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
-		</dependency>
-		<!-- Tous les modules utilisent JUnit pour les tests -->
+
+		<!-- JUnit Testing -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -362,12 +375,38 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 
 	<profiles>
 		<profile>
-			<!-- Profile pour l'int?gration continue -->
+			<!-- Jenkins plugins -->
 			<id>ci</id>
 			<activation>
 			</activation>
 			<build>
 				<plugins>
+					<!-- Sources -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Javadocs -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 					<!-- Checkstyle -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -397,12 +436,15 @@ Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
 				</plugins>
 			</build>
 		</profile>
+		<!-- TODO ci-integration -->
 	</profiles>
 
-  <modules>
-    <module>commons</module>
-    <module>services</module>
-    <module>ear</module>
-    <module>services-test</module>
-  </modules>
+	<!-- Modules -->
+	<modules>
+		<module>commons</module>
+		<module>services</module>
+		<module>solr</module>
+		<module>ear</module>
+		<module>services-test</module>
+	</modules>
 </project>
