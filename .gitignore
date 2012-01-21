@@ -1,0 +1,18 @@
+# Maven
+target/
+
+# Eclipse
+.project
+.classpath
+.settings/
+.checkstyle
+
+# Intellj IDEA
+*.iml
+*.ipr
+*.iws
+
+# Temp file
+*~
+.DS_Store
+

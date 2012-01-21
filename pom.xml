@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>eu.akka</groupId>
+		<artifactId>AkkaToulouseSuperPom</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<groupId>org.ilaborie.lged</groupId>
+	<artifactId>org.ilaborie.lged</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>Exemple d'application JavaEE</name>
+	<description>Exemple d'application JavaEE pour AKKA
+Avec JavaEE 6, JDK 6, EJB, CDI, Arquillian, ...</description>
+	<organization>
+		<name>AKKA informatique &amp; Syst?mes</name>
+		<url>http://www.akka.eu</url>
+	</organization>
+	<inceptionYear>2012</inceptionYear>
+
+	<properties>
+		<!-- JUnit -->
+		<junit.version>4.8.2</junit.version>
+
+		<!-- JavaEE -->
+		<jboss.jee.version>2.0.0.Final</jboss.jee.version>
+		<ejb.version>3.1</ejb.version>
+
+		<!-- Arquillian et JBoss -->
+		<arquillian.version>1.0.0.CR7</arquillian.version>
+		<jboss.as.version>7.0.2.Final</jboss.as.version>
+
+		<!-- Log -->
+		<slf4j.version>1.6.1</slf4j.version>
+		<log4j.version>1.2.16</log4j.version>
+
+		<!-- Utils -->
+		<guava.version>11.0</guava.version>
+
+		<!-- Versions des plugins maven -->
+		<maven.compiler.version>2.3.2</maven.compiler.version>
+		<maven.jar.version>2.3.1</maven.jar.version>
+		<maven.war.version>2.1.1</maven.war.version>
+		<maven.ejb.version>2.3</maven.ejb.version>
+		<maven.ear.version>2.6</maven.ear.version>
+		<maven.surefire.version>2.9</maven.surefire.version>
+		<maven.failsafe.version>2.11</maven.failsafe.version>
+		<maven.enforcer.version>1.0.1</maven.enforcer.version>
+		<maven.eclipse.version>2.8</maven.eclipse.version>
+		<maven.source.version>2.1.2</maven.source.version>
+		<maven.javadoc.version>2.8</maven.javadoc.version>
+		<jboss.apiviz.version>1.3.1.GA</jboss.apiviz.version>
+		<maven.archetype.version>2.2</maven.archetype.version>
+
+		<maven.checkstyle.version>2.8</maven.checkstyle.version>
+		<maven.pmd.version>2.6</maven.pmd.version>
+
+		<!-- Encodage des fichiers -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<!-- JDK 6 -->
+		<java.version>1.6</java.version>
+	</properties>
+
+	<scm>
+		<!-- TODO ? voir quand le projet sera en conf -->
+	</scm>
+
+	<build>
+		<!-- D?finition des configurations et version des plugins maven -->
+		<pluginManagement>
+			<plugins>
+				<!-- Compilation -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven.compiler.version}</version>
+					<configuration>
+						<source>${java.version}</source>
+						<target>${java.version}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<configuration>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+				</plugin>
+				<!-- Packaging -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${maven.jar.version}</version>
+					<configuration>
+						<archive>
+							<addMavenDescriptor/>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>${maven.war.version}</version>
+					<configuration>
+						<archive>
+							<addMavenDescriptor/>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-ejb-plugin</artifactId>
+					<version>${maven.ejb.version}</version>
+					<configuration>
+						<ejbVersion>${ejb.version}</ejbVersion>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-ear-plugin</artifactId>
+					<version>${maven.ear.version}</version>
+					<configuration>
+						<defaultLibBundleDir>lib</defaultLibBundleDir>
+						<archive>
+							<addMavenDescriptor/>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+				<!-- Tests -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven.surefire.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>${maven.failsafe.version}</version>
+				</plugin>
+				<!-- Javadoc -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven.javadoc.version}</version>
+					<configuration>
+						<header>&lt;b&gt;${project.name} ${project.version}&lt;/b&gt;</header>
+						<footer>&lt;b&gt;${project.name} ${project.version}&lt;/b&gt;</footer>
+						<archive>
+							<index>true</index>
+							<manifest>
+								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+				<!-- Cr?ation du packaging des sources -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${maven.source.version}</version>
+				</plugin>
+				<!-- Contr?le de l'environement -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>${maven.enforcer.version}</version>
+				</plugin>
+				<!-- Reporting -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>${maven.checkstyle.version}</version>
+					<configuration>
+						<configLocation>src/checkstyle/AKKA_NTIC_checkstyle_1_0_0.xml</configLocation>
+						<linkXRef>false</linkXRef>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-pmd-plugin</artifactId>
+					<version>${maven.pmd.version}</version>
+					<configuration>
+						<targetJdk>${java.version}</targetJdk>
+						<linkXRef>false</linkXRef>
+					</configuration>
+				</plugin>
+				<!-- G?n?ration des projets Eclipse -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<version>${maven.eclipse.version}</version>
+					<configuration>
+						<wtpversion>2.0</wtpversion>
+						<downloadSources>true</downloadSources>
+						<downloadJavadocs>true</downloadJavadocs>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-archetype-plugin</artifactId>
+					<version>${maven.archetype.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<!-- Plugins par d?faut -->
+		<plugins>
+			<!-- Contr?le de l'environement -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>enforce-maven-environment</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<rules>
+						<requireMavenVersion>
+							<version>[3.0.0,)</version> <!-- N?cessite un Maven 3+ -->
+							<message>'Maven 3+ requis"</message>
+						</requireMavenVersion>
+						<requireJavaVersion>
+							<version>1.6.0</version> <!-- JDK6 obligatoire -->
+							<message>'Java 6+ requis"</message>
+						</requireJavaVersion>
+						<requireProperty>
+							<property>env.JAVA_HOME</property> <!-- D?finir le JAVA_HOME -->
+							<message>"Le JAVA_HOME doit ?tre d?finit pour la compilation"</message>
+						</requireProperty>
+					</rules>
+				</configuration>
+			</plugin>
+			<!-- G?n?ration du jar des sources -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- G?n?ration de la Javadoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<!-- Modules -->
+
+	<!-- Gestion des d?pendances -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- D?pendances sur JavaEE 6 -->
+			<dependency>
+				<groupId>org.jboss.spec</groupId>
+				<artifactId>jboss-javaee-6.0</artifactId>
+				<version>${jboss.jee.version}</version>
+				<type>pom</type>
+				<scope>provided</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.xalan</groupId>
+						<artifactId>xalan</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<!-- guava -->
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
+			</dependency>
+			<!-- JBoss AS 7 -->
+			<dependency>
+				<groupId>org.jboss.as</groupId>
+				<artifactId>jboss-as-arquillian-container-remote</artifactId>
+				<version>${jboss.as.version}</version>
+			</dependency>
+			<!-- Arquillian -->
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${arquillian.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.arquillian.protocol</groupId>
+				<artifactId>arquillian-protocol-servlet</artifactId>
+				<version>${arquillian.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- D?pendances communes -->
+	<dependencies>
+		<!-- Logs: slf4j avec Log4j -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<!-- Tous les modules utilisent JUnit pour les tests -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<!-- Profile pour l'int?gration continue -->
+			<id>ci</id>
+			<activation>
+			</activation>
+			<build>
+				<plugins>
+					<!-- Checkstyle -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>checkstyle</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- PMD -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-pmd-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>pmd</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+  <modules>
+    <module>commons</module>
+    <module>services</module>
+    <module>ear</module>
+    <module>services-test</module>
+  </modules>
+</project>
