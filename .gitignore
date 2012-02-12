@@ -6,6 +6,8 @@ target/
 .classpath
 .settings/
 .checkstyle
+Servers/
+.metadata/
 
 # Intellj IDEA
 *.iml
@@ -15,4 +17,10 @@ target/
 # Temp file
 *~
 .DS_Store
+*.log
 
+
+# Binary
+*.jar
+*.zip
+*.tar.gz

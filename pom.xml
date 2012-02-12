@@ -2,14 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.ilaborie.lged</groupId>
-	<artifactId>org.ilaborie.lged</artifactId>
+	<groupId>org.ilaborie</groupId>
+	<artifactId>org.ilaborie</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-
-	<name>Local GED</name>
-	<description>A local GED application</description>
-	<inceptionYear>2012</inceptionYear>
 
 	<properties>
 		<!-- JUnit -->
@@ -19,9 +15,20 @@
 		<jboss.jee.version>2.0.0.Final</jboss.jee.version>
 		<ejb.version>3.1</ejb.version>
 
-		<!-- Arquillian et JBoss -->
+		<!-- Arquillian -->
 		<arquillian.version>1.0.0.CR7</arquillian.version>
-		<jboss.as.version>7.0.2.Final</jboss.as.version>
+		<!-- <arquillian.version>1.0.0.Final</arquillian.version> -->
+
+		<!-- JBoss -->
+<!-- 		<jboss.as.version>7.0.2.Final</jboss.as.version> -->
+		<jboss.as.version>7.1.0.Final</jboss.as.version>
+
+		<!-- Glassfish -->
+		<arquillian.glassfish.version>1.0.0.CR2</arquillian.glassfish.version>
+		<glassfish.version>3.1.1</glassfish.version>
+		<osgi.version>4.2.0</osgi.version>
+
+		<derby.version>10.8.2.2</derby.version>
 
 		<!-- Log -->
 		<slf4j.version>1.6.1</slf4j.version>
@@ -32,6 +39,12 @@
 
 		<!-- Indexing with SolR -->
 		<solr.version>3.5.0</solr.version>
+
+		<!-- Tika -->
+		<tika.version>1.0</tika.version>
+		<poi.version>3.8-beta5</poi.version>
+		<pdfbox.version>1.6.0</pdfbox.version>
+		<xmlbeans.version>2.3.0</xmlbeans.version>
 
 		<!-- Maven Plugins -->
 		<maven.compiler.version>2.3.2</maven.compiler.version>
@@ -60,7 +73,7 @@
 	</properties>
 
 	<scm>
-		<!-- TODO -->
+		<!-- TODO github ilaborie lged -->
 	</scm>
 
 	<build>
@@ -292,6 +305,65 @@
 				<version>${solr.version}</version>
 			</dependency>
 
+			<!-- Tika -->
+			<dependency>
+				<groupId>org.apache.tika</groupId>
+				<artifactId>tika-parsers</artifactId>
+				<version>${tika.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.poi</groupId>
+						<artifactId>poi</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.poi</groupId>
+						<artifactId>poi-scratchpad</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.poi</groupId>
+						<artifactId>poi-ooxml</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<!-- POI -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${poi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-scratchpad</artifactId>
+				<version>${poi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml</artifactId>
+				<version>${poi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.pdfbox</groupId>
+				<artifactId>pdfbox</artifactId>
+				<version>${pdfbox.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.xmlbeans</groupId>
+				<artifactId>xmlbeans</artifactId>
+				<version>${xmlbeans.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>stax</groupId>
+						<artifactId>stax-api</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
 			<!-- JavaEE 6 -->
 			<dependency>
 				<groupId>org.jboss.spec</groupId>
@@ -328,6 +400,29 @@
 				<version>${jboss.as.version}</version>
 			</dependency>
 
+			<!-- Glassfish 3.1 -->
+			<dependency>
+				<groupId>org.jboss.arquillian.container</groupId>
+				<artifactId>arquillian-glassfish-embedded-3.1</artifactId>
+				<version>${arquillian.glassfish.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.extras</groupId>
+				<artifactId>glassfish-embedded-all</artifactId>
+				<version>${glassfish.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.osgi</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>${osgi.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.derby</groupId>
+				<artifactId>derby</artifactId>
+				<version>${derby.version}</version>
+			</dependency>
+
 			<!-- Logging -->
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -342,6 +437,11 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>jcl-over-slf4j</artifactId>
+				<version>${slf4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jul-to-slf4j</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
 			<dependency>
@@ -362,6 +462,10 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jul-to-slf4j</artifactId>
 		</dependency>
 
 		<!-- JUnit Testing -->
@@ -441,10 +545,7 @@
 
 	<!-- Modules -->
 	<modules>
-		<module>commons</module>
-		<module>services</module>
-		<module>solr</module>
-		<module>ear</module>
-		<module>services-test</module>
+		<module>search</module>
+		<module>lged</module>
 	</modules>
 </project>
