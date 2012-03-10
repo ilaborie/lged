@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.ilaborie.lged.commons.model.Shelf;
 import org.ilaborie.lged.commons.service.IShelfService;
@@ -37,7 +38,7 @@ public class ShelfServiceImpl implements IShelfService {
 	@Override
 	public Shelf createShelf(Shelf shelf) {
 		Preconditions.checkNotNull(shelf);
-		
+
 		// Mapping to entity
 		ShelfEntity entity = new ShelfEntity();
 		entity.setName(shelf.getName());
@@ -45,7 +46,7 @@ public class ShelfServiceImpl implements IShelfService {
 		// Create the id
 		String uuid = UUID.randomUUID().toString();
 		entity.setUuid(uuid);
-		
+
 		// Persist
 		this.em.persist(entity);
 		this.log.debug("Shelf created: {}", shelf);
@@ -67,6 +68,9 @@ public class ShelfServiceImpl implements IShelfService {
 		return shelf;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.ilaborie.lged.commons.service.IShelfService#getShelfById(java.lang.String)
+	 */
 	@Override
 	public Shelf getShelfById(String id) {
 		Preconditions.checkNotNull(id);
@@ -75,10 +79,13 @@ public class ShelfServiceImpl implements IShelfService {
 		return shelf;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.ilaborie.lged.commons.service.IShelfService#getAllShelves()
+	 */
 	@Override
-	public List<Shelf> getAllShelves() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<? extends Shelf> getAllShelves() {
+		TypedQuery<ShelfEntity> query = this.em.createNamedQuery(ShelfEntity.QUERY_FIND_ALL, ShelfEntity.class);
+		return query.getResultList();
 	}
 
 	/*

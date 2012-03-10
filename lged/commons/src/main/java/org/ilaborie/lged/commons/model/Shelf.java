@@ -1,6 +1,5 @@
 package org.ilaborie.lged.commons.model;
 
-import java.util.List;
 
 /**
  * The Interface Shelf.
@@ -20,12 +19,5 @@ public interface Shelf {
 	 * @return the name
 	 */
 	String getName();
-
-	/**
-	 * Gets the sources.
-	 *
-	 * @return the sources
-	 */
-	List<Source> getSources();
 
 }

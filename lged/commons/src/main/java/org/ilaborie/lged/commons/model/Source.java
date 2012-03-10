@@ -8,6 +8,20 @@ import org.ilaborie.search.commons.model.IIndexableElement;
  * The Interface Source.
  */
 public interface Source {
+	
+	/**
+	 * Gets the shelf.
+	 *
+	 * @return the shelf
+	 */
+	Shelf getShelf();
+	
+	/**
+	 * Gets the comment.
+	 *
+	 * @return the comment
+	 */
+	String getComment();
 
 	/**
 	 * Gets the by id.

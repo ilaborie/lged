@@ -38,7 +38,7 @@ public interface IShelfService {
 	 *
 	 * @return the all shelves
 	 */
-	List<Shelf> getAllShelves();
+	List<? extends Shelf> getAllShelves();
 
 	/**
 	 * Delete shelf.
