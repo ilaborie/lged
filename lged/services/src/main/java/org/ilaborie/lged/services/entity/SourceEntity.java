@@ -1,5 +1,6 @@
 package org.ilaborie.lged.services.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -7,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import org.ilaborie.lged.commons.model.Source;
 import org.ilaborie.search.commons.model.IIndexableElement;
@@ -15,7 +18,14 @@ import org.ilaborie.search.commons.model.IIndexableElement;
  * The Class SourceEntity.
  */
 @Entity
-public class SourceEntity implements Source {
+@NamedQueries(@NamedQuery(name = SourceEntity.QUERY_FIND_BY_SHELF, query = "From SourceEntity s Where s.shelf = :shelf"))
+public class SourceEntity implements Source, Serializable {
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = -1698118093890849766L;
+
+	/** The Constant QUERY_FIND_ALL. */
+	public static final String QUERY_FIND_BY_SHELF = "SourceEntity.findByShelf";
 
 	/** The uuid. */
 	@Id
@@ -39,7 +49,9 @@ public class SourceEntity implements Source {
 		super();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.ilaborie.lged.commons.model.Source#getById(java.lang.String)
 	 */
 	@Override
@@ -48,7 +60,9 @@ public class SourceEntity implements Source {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.ilaborie.lged.commons.model.Source#getAllElements()
 	 */
 	@Override
