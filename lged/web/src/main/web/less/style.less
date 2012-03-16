@@ -9,16 +9,70 @@ body {
 
 
 /* ===== Primary Styles ========================================================
-   Author:
+   Author: Igor Laborie <ilaborie@gmail.com>
    ========================================================================== */
 
+// Colors
+@colorShelf: #FFD9B3;
+@colorSource: #E5F7FF;
+
+@colorLocation: #0D633C;
+
+// Size
+@textareaHeight: 5.6em;
+
+// Mixins
+.box (@color: #ccc) when (iscolor(@color)){
+	.border-radius();
+	.box-shadow();
+	margin-bottom: 1em;
+	padding: 1em;
+	background-color: @color;
+	border-style: solid;
+	border-width: medium;
+	border-color: darken(@color,25%);
+}
+
+// Forms
+.inputLabel {
+	line-height: @baseLineHeight * 1.5;
+	font-size: 18px;
+}
+.mandatory {
+	font-weight: bold;
+}
+
+// Search
+#search-result {
+	#search-result-info {
+		color: @gray;
+		font-style: italic;
+	}
+	.row {
+		.result {
+			.location {
+				color: @colorLocation;
+			}
+			.teaser {
+				color: @grayDark;
+			}
+		}
+	}
+}
 
 
+// Administration
+.shelf {
+	.box(@colorShelf);
+}
 
+#shelf-description {
+	height: @textareaHeight;
+} 
+#source-description {
+	height: @textareaHeight;
+} 
 
-
-
-
-
-
-
+.source {
+	.box(@colorSource);
+}

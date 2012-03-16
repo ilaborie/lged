@@ -24,3 +24,6 @@ Servers/
 *.jar
 *.zip
 *.tar.gz
+
+# Less
+*.css

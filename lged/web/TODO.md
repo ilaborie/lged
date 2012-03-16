@@ -26,7 +26,7 @@ Use dynamic page loading (2 step: prepare page, display page result)
 * Title
 * Shelf/source
 * Teaser (hightlight)
-* links 
+* links
 
 Admin page
 ----------
@@ -42,7 +42,7 @@ Update shelf, add/remove source, detail source
 
 ### Source Details
 
-Update/SaveÒ
+Update/Save
 
 
 
