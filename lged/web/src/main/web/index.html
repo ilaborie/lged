@@ -46,9 +46,10 @@
 	<div id="search-content" class="content hidden">
 		<!-- Main hero unit for a primary marketing message or call to action -->
 		<div id="search-input">
-			<label for="primarySearch" class="inputLabel">Search</label>
-			<input type="text" value="" accesskey="f" title="Search" name="query" id="primarySearch" class="form-search keynav">
-			<button type="submit" name="go" id="btnSearch" class="btn btn-primary" style="vertical-align: top;">&raquo;</button>
+			<form class="well form-search">
+				<input type="text" title="Query" name="query" id="primarySearch" class="input-medium search-query" value="" placeholder="Type your query">
+				<button type="submit" id="btnSearch" class="btn btn-primary" style="vertical-align: top;">&raquo;</button>
+			</form>
 		</div>
 		<div id="search-result" class=hidden">
 			<div id="search-result-info" class="span12">Environ 25 270 000 000 résultats (0,22 secondes)</div>
