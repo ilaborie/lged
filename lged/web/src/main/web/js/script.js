@@ -28,17 +28,19 @@ $(document).ready(function() {
 	$("#primarySearch").keypress(LocalGed.handleSearch);
 	
 	// Shelves Administration
-	$("#btnBackShelves").click(LocalGed.backShelves);
 	$("#btnAddShelf").click(LocalGed.addShelf);
+	$("#btnBackShelves").click(LocalGed.backShelves);
 	$(".showShelf").click(LocalGed.showShelf);
 	$(".delShelf").click(LocalGed.deleteShelf);
 	$("#btnSaveShelf").click(LocalGed.saveShelf);
+	$("#btnCreateShelf").click(LocalGed.createShelf);
 	
 	// Sources Administration
 	$("#btnBackShelf").click(LocalGed.backShelf);
 	$("#btnAddSource").click(LocalGed.addSource);
 	$(".showSource").click(LocalGed.showSource);
 	$(".delSource").click(LocalGed.deleteSource);
+	$("#btnCreateShelf").click(LocalGed.createSource);
 	$("#btnSaveShelf").click(LocalGed.saveSource);
 	
 	// Initial State
@@ -77,10 +79,10 @@ LocalGed.showShelf = function () {
 	LocalGed.showDetailShelf(id);
 };
 /**
- * Create a new shelf
+ * Show Shelf creation dialog
  */
 LocalGed.addShelf = function() {
-	LocalGed.showDetailShelf(false);
+	$("#diaNewShelf").modal('show');
 };
 /**
  * Show shelf (new or existing)
@@ -94,36 +96,21 @@ LocalGed.showDetailShelf = function(id) {
 	// show Detail
 	$("#shelfDetail").removeClass("hidden");
 	
-	if (id) {
-		// Detail of a Shelf
-		$("#shelf-id").attr("value",id);
-		LocalGed.shelf = id;
-		
-		var name = $("#shelf-"+id+" h2").text();
-		$("#shelf-name").attr("value",name);
+	// Detail of a Shelf
+	$("#shelf-id").attr("value",id);
+	LocalGed.shelf = id;
+	
+	var name = $("#shelf-"+id+" h2").text();
+	$("#shelf-name").attr("value",name);
 
-		var descr = $("#shelf-"+id+" p").text();
-		$("#shelf-description").attr("value",descr);
-		
-		// Save button
-		$("#btnSaveShelf").text("Update");
-		$("#btnAddSource").removeAttr("disabled");
-		
-		// TODO REST get shelf/{id}
-		
-	} else {
-		// New
-		$("#shelf-id").attr("value","");
-		LocalGed.shelf = null;
-		$("#shelf-name").attr("value","");
-		$("#shelf-description").attr("value","");
-		
-		// Create button
-		$("#btnSaveShelf").text("Create");
-		$("#btnAddSource").attr("disabled","disabled");
-		// Focus
-		$("#shelf-name").focus();
-	}
+	var descr = $("#shelf-"+id+" p").text();
+	$("#shelf-description").attr("value",descr);
+	
+	// Save button
+	$("#btnSaveShelf").text("Update");
+	$("#btnAddSource").removeAttr("disabled");
+	
+	// TODO REST get shelf/{id}
 };
 /**
  * Delete a shelf
@@ -139,15 +126,25 @@ LocalGed.deleteShelf = function() {
 		// TODO REST delete shelf/{id}
 	});
 };
-
 /**
- * Create or Update the current shelf
+ * Update the current shelf
  */
 LocalGed.saveShelf = function() {
 	var shelf = {};
 	shelf.id = $("#shelf-id").attr("value");
 	shelf.name = $("#shelf-name").attr("value");
 	shelf.description = $("#shelf-description").attr("value");
+	
+	// TODO REST put shelf
+	// TODO update field on OK
+};
+/**
+ * Create the current shelf
+ */
+LocalGed.createShelf = function() {
+	var shelf = {};
+	shelf.name = $("#shelf-create-name").attr("value");
+	shelf.description = $("#shelf-create-description").attr("value");
 	
 	// TODO REST put shelf
 	// TODO update field on OK
@@ -227,9 +224,7 @@ LocalGed.showSource = function () {
 * Create a new Source
 */
 LocalGed.addSource = function () {
-	if ($(this).attr("disabled")!="disabled") {
-		LocalGed.showDetailSource(false);
-	}
+	$("#diaNewSource").modal('show');
 };
 /**
 * Show source (new or existing)
@@ -243,41 +238,23 @@ LocalGed.showDetailSource = function (id) {
 	// Show source
 	$("#sourceDetail").removeClass("hidden");
 	
-	if (id) {
-		// Detail of current source
-		$("#source-id").attr("value",id);
-		LocalGed.source = id;
-		
-		var name = $("#source-"+id+" h2").text();
-		$("#source-name").attr("value",name);
-
-		var descr = $("#source-"+id+" p").text();
-		$("#source-description").attr("value",descr);
-		
-		// TODO REST get source/{id}
-		
-		// Save button
-		$("#btnSaveSource").text("Update");
-	} else {
-		// Create a new source
-		$("#source-id").attr("value","");
-		LocalGed.source = null;
-		$("#source-name").attr("value","");
-		$("#source-description").attr("value","");
-		
-		// Folder attributes 
-		$("#source-folder").attr("value","");
-		$("#source-recursif").attr("checked","checked");
-		
-		// Create button
-		$("#btnSaveSource").text("Create");
-		// Focus
-		$("#source-name").focus();
-	}
+	// Detail of current source
+	$("#source-id").attr("value",id);
+	LocalGed.source = id;
 	
+	var name = $("#source-"+id+" h2").text();
+	$("#source-name").attr("value",name);
+
+	var descr = $("#source-"+id+" p").text();
+	$("#source-description").attr("value",descr);
+	
+	// TODO REST get source/{id}
+	
+	// Save button
+	$("#btnSaveSource").text("Update");
 };
 /**
- * Create a save a source 
+ * Update the selected source 
  */
 LocalGed.saveSource = function() {
 	var src = {};
@@ -291,7 +268,21 @@ LocalGed.saveSource = function() {
 	
 	// TODO REST put source
 	// TODO update field on OK
-
+};
+/**
+ * Create a new source 
+ */
+LocalGed.createSource = function() {
+	var src = {};
+	src.name = $("#source-name").attr("value");
+	src.description = $("#source-description").attr("value");
+	
+	// Folder attributes 
+	src.folder = $("#source-folder").attr("value");
+	src.recursif = ("checked"==$("#source-recursif").attr("checked"));
+	
+	// TODO REST put source
+	// TODO update field on OK
 };
 /**
  * Delete a source

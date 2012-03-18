@@ -28,18 +28,27 @@ body {
 	margin-bottom: 1em;
 	padding: 1em;
 	background-color: @color;
-	border-style: solid;
 	border-width: medium;
+	border-style: solid;
 	border-color: darken(@color,25%);
 }
 
 // Forms
-.inputLabel {
-	line-height: @baseLineHeight * 1.5;
-	font-size: 18px;
-}
 .mandatory {
 	font-weight: bold;
+}
+.modal {
+	input {
+		width: 100%;
+	}
+	textarea {
+		width: 100%;
+	}
+	.checkbox {
+		input {
+			width: auto;
+		}
+	}
 }
 
 // Search
@@ -65,14 +74,21 @@ body {
 .shelf {
 	.box(@colorShelf);
 }
-
+#shelf-form {
+	background-color: @colorShelf;
+	border-color: darken(@colorShelf,25%);	
+}
 #shelf-description {
-	height: @textareaHeight;
-} 
-#source-description {
 	height: @textareaHeight;
 } 
 
 .source {
 	.box(@colorSource);
 }
+#source-form {
+	background-color: @colorSource;
+	border-color: darken(@colorSource,25%);	
+}
+#source-description {
+	height: @textareaHeight;
+} 

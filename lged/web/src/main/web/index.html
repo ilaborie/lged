@@ -48,7 +48,7 @@
 		<div id="search-input">
 			<form class="well form-search">
 				<input type="text" title="Query" name="query" id="primarySearch" class="input-medium search-query" value="" placeholder="Type your query">
-				<button type="submit" id="btnSearch" class="btn btn-primary" style="margin-left :-16px;vertical-align: top;"><i class="icon-search icon-white"></i></button>
+				<button type="submit" id="btnSearch" class="btn btn-success" style="margin-left :-16px;vertical-align: top;"><i class="icon-search icon-white"></i></button>
 			</form>
 		</div>
 		<div id="search-result" class=hidden">
@@ -83,30 +83,48 @@
 					<h2>Shelf One</h2>
 					<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
 					<a id="btnShowShelf-1" class="btn showShelf" href="#">View details &raquo;</a>
-					<div class="pull-right"><a id="btnDelShelf-1" class="btn btn-danger delShelf" href="#">Delete</a></div>
+					<div class="pull-right"><a id="btnDelShelf-1" class="btn btn-danger delShelf" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
 				</div>
 				<div id="shelf-2" class="span10 shelf offset1">
 					<h2>Shelf Two</h2>
 					<p>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Donec id elit non mi porta gravida at eget metus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
 					<a id="btnShowShelf-2" class="btn showShelf" href="#">View details &raquo;</a>
-					<div class="pull-right"><a id="btnDelShelf-2" class="btn btn-danger delShelf" href="#">Delete</a></div>
+					<div class="pull-right"><a id="btnDelShelf-2" class="btn btn-danger delShelf" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
 				</div>
 			</div>
 		</div>
 		
+		<!-- Create a new Shelf -->
+		<div id="diaNewShelf" class="modal fade">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a>
+				<h3>Create a new Shelf</h3>
+			</div>
+			<div class="modal-body max-height">
+				<label for="shelf-create-name" class="mandatory">Name</label>
+				<input type="text" value="" title="Name" name="name" id="shelf-create-name" required="required" placeholder="Shelf name"/>
+				<label for="shelf-create-description" >Description</label>
+ 				<textarea title="Description" name="description" id="shelf-create-description" placeholder="Shelf description...">
+				</textarea>
+			</div>
+			<div class="modal-footer">
+				<a id="btnCreateShelf" href="#" class="btn btn-primary">Create</a>
+				<a href="#" class="btn" data-dismiss="modal">Close</a>
+			</div>
+		</div>
 		<!-- Shelf detail -->
 		<div id="shelfDetail" class="hidden">
 			<p><a href="#" id="btnBackShelves" class="btn">&laquo; Back to Shelves</a></p>
 			<div class="row">
-				<div id="shelf-form" class="span10 shelf offset1">
+				<form id="shelf-form" class="well span10 offset1">
 					<input type="hidden" name="shelf-id" value=""/>
-					<label for="shelf-name" class="inputLabel mandatory">Name</label>
+					<label for="shelf-name" class="mandatory">Name</label>
 					<input type="text" value="" title="Name" name="name" id="shelf-name" required="required" placeholder="Shelf name" class="span5"/>
-					<label for="shelf-description" class="inputLabel">Description</label>
+					<label for="shelf-description" >Description</label>
  					<textarea title="Description" name="description" id="shelf-description" class="span9" placeholder="Shelf description...">
 					</textarea>
-					<div class="pull-right"><a id="btnSaveShelf" class="btn btn-primary" href="#"></a></div>
-				</div>
+					<div class="pull-right"><a id="btnSaveShelf" class="btn btn-primary" href="#">Update</a></div>
+				</form>
 				<div class="span10 offset1">
 					<hr />
 					<p><a href="#" id="btnAddSource" class="btn btn-primary">Add a new Source</a></p>
@@ -116,38 +134,63 @@
 						<h2>Source One</h2>
 						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
 						<a id="btnShowSource-1" class="btn showSource" href="#">View details &raquo;</a>
-						<div class="pull-right"><a id="btnDelSource-1" class="btn btn-danger delSource" href="#">Delete</a></div>
+						<div class="pull-right"><a id="btnDelSource-1" class="btn btn-danger delSource" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
 					</div>
 					<div id="source-2" class="source">
 						<h2>Source Two</h2>
 						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
 						<a id="btnShowSource-2" class="btn showSource" href="#">View details &raquo;</a>
-						<div class="pull-right"><a id="btnDelSource-2" class="btn btn-danger delSource" href="#">Delete</a></div>
+						<div class="pull-right"><a id="btnDelSource-2" class="btn btn-danger delSource" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
 					</div>
 				</div> 
 			</div>
 		</div>
 		
+		<!-- Create a new Source -->
+		<div id="diaNewSource" class="modal fade">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a>
+				<h3>Create a new Source</h3>
+			</div>
+			<div class="modal-body max-height">
+				<label for="source-create-name" class="mandatory">Name</label>
+				<input type="text" value="" title="Name" name="name" id="source-create-name" required="required" placeholder="Source name"/>
+				<label for="source-create-description" >Description</label>
+ 				<textarea title="Description" name="description" id="source-create-description" placeholder="Source description...">
+				</textarea>
+				<hr />
+				<label for="source-create-folder" class="mandatory">Folder</label>
+				<input type="text" title="Folder" value="" name="source-create-folder" id="source-create-folder" placeholder="Folder to index"/>
+				<br/>
+				<label for="source-recursif" class="checkbox" >
+					<input type="checkbox" title="Recursif" name="source-recursif" id="source-create-recursif" /> Recursive
+				</label>
+			</div>
+			<div class="modal-footer">
+				<a id="btnCreateSource" href="#" class="btn btn-primary">Create</a>
+				<a href="#" class="btn" data-dismiss="modal">Close</a>
+			</div>
+		</div>
 		<!-- Source detail -->
 		<div id="sourceDetail" class="hidden">
 			<p><a href="#" id="btnBackShelf" class="btn">&laquo; Back to Shelf</a></p>
 			<div class="row">
-				<div id="source-form" class="span10 source offset1">
+				<form id="source-form" class="well span10 offset1">
 					<input type="hidden" name="source-id" value=""/>
-					<label for="source-name" class="inputLabel mandatory">Name</label>
+					<label for="source-name" class="mandatory">Name</label>
 					<input type="text" value="" title="Name" name="name" id="source-name" required="required" placeholder="Source name" class="span5"/>
-					<label for="source-description" class="inputLabel">Description</label>
+					<label for="source-description" >Description</label>
  					<textarea title="Description" name="description" id="source-description" class="span9" placeholder="Source description...">
 					</textarea>
+					<hr />
 					<!-- Special Folder source -->
-					<div id="source-folder" class="sourceFolder">
-						<label for="source-folder" class="inputLabel">Folder</label>
-						<input type="text" title="Folder" value="" name="source-folder-display" id="source-folder-field" class="span5"/>
-						<br/>
-						<input type="checkbox" title="Recursif" name="source-recursif" id="source-recursif" class="checkbox inline" />
-						<label for="source-recursif" class="inputLabel checkbox inline" style="margin-left: -10px;" >Recursive</label>
-						<!-- TODO includes, excludes -->
-					</div>
+					<label for="source-folder" class="mandatory">Folder</label>
+					<input type="text" title="Folder" value="" name="source-folder-display" id="source-folder-field" class="span5"/>
+
+					<label for="source-recursif" class="checkbox">
+						<input type="checkbox" title="Recursif" name="source-recursif" id="source-recursif"/> Recursive
+					</label>
+					<!-- TODO includes, excludes -->
 					<div class="pull-right"><a id="btnSaveSource" class="btn btn-primary" href="#"></a></div>
 				</div>
 			</div>
@@ -172,8 +215,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
 
-<script src="js/libs/bootstrap/transition.js"></script>
-<script src="js/libs/bootstrap/collapse.js"></script>
+<script src="js/libs/bootstrap/bootstrap.min.js"></script>
 
 <script src="js/script.js"></script>
 <!-- 
