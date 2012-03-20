@@ -9,7 +9,7 @@
 
 	<properties>
 		<!-- JUnit -->
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.10</junit.version>
 
 		<!-- JavaEE -->
 		<jboss.jee.version>2.0.0.Final</jboss.jee.version>
@@ -20,22 +20,22 @@
 		<!-- <arquillian.version>1.0.0.Final</arquillian.version> -->
 
 		<!-- JBoss -->
-<!-- 		<jboss.as.version>7.0.2.Final</jboss.as.version> -->
-		<jboss.as.version>7.1.0.Final</jboss.as.version>
+		<jboss.as.version>7.1.1.Final</jboss.as.version>
+		<resteasy.version>2.3.2.Final</resteasy.version>
 
 		<!-- Glassfish -->
 		<arquillian.glassfish.version>1.0.0.CR2</arquillian.glassfish.version>
-		<glassfish.version>3.1.1</glassfish.version>
+		<glassfish.version>3.1.2</glassfish.version>
 		<osgi.version>4.2.0</osgi.version>
 
 		<derby.version>10.8.2.2</derby.version>
 
 		<!-- Log -->
-		<slf4j.version>1.6.1</slf4j.version>
+		<slf4j.version>1.6.4</slf4j.version>
 		<log4j.version>1.2.16</log4j.version>
 
 		<!-- Utils -->
-		<guava.version>11.0.1</guava.version>
+		<guava.version>11.0.2</guava.version>
 
 		<!-- Indexing with SolR -->
 		<solr.version>3.5.0</solr.version>
@@ -73,7 +73,7 @@
 	</properties>
 
 	<scm>
-		<!-- TODO github ilaborie lged -->
+		<!-- TODO github ilaborie pineneedles -->
 	</scm>
 
 	<build>
@@ -399,6 +399,14 @@
 				<artifactId>jboss-as-arquillian-container-remote</artifactId>
 				<version>${jboss.as.version}</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>org.jboss.resteasy</groupId>
+				<artifactId>resteasy-bom</artifactId>
+				<version>${resteasy.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
 
 			<!-- Glassfish 3.1 -->
 			<dependency>
@@ -545,7 +553,6 @@
 
 	<!-- Modules -->
 	<modules>
-		<module>search</module>
-		<module>lged</module>
+		<module>org.ilaborie.pineneedles</module>
 	</modules>
 </project>
