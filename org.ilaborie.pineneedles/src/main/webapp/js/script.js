@@ -209,7 +209,9 @@ LocalGed.saveShelf = function() {
 	shelves.put(shelf, function(json) {
 		// update field on OK
 		$("#shelf-name").attr("value",json.name);
-		$("#shelf-description").attr("value",json.description)		
+		$("#shelf-description").attr("value",json.description)
+		
+		LocalGed.notify("admin","success","Shelf updated");
 	});
 };
 /**
@@ -378,7 +380,7 @@ function RestServiceJs(newurl) {
 			processData: false,
 			contentType: 'application/json',
 			success: callback,
-			error: function(req, status, ex) {},
+			error: LocalGed.restError,
 			timeout:60000
 		});
 	};
@@ -392,7 +394,7 @@ function RestServiceJs(newurl) {
 			processData: false,
 			contentType: 'application/json',
 			success: callback,
-			error: function(req, status, ex) {},
+			error: LocalGed.restError,
 			timeout:60000
 		});
 	};
@@ -403,7 +405,7 @@ function RestServiceJs(newurl) {
 			url: this.myurl + '/' + id,
 			contentType: 'application/json',
 			success: callback,
-			error: function(req, status, ex) {},
+			error: LocalGed.restError,
 			timeout:60000
 		});
 	};
@@ -414,7 +416,7 @@ function RestServiceJs(newurl) {
 			url: this.myurl,
 			contentType: 'application/json',
 			success: callback,
-			error: function(req, status, ex) {},
+			error: LocalGed.restError,
 			timeout:60000
 		});
 	};
@@ -425,7 +427,7 @@ function RestServiceJs(newurl) {
 			url: this.myurl + '/' + id,
 			contentType: 'application/json',
 			success: callback,
-			error: function(req, status, ex) {},
+			error: LocalGed.restError,
 			timeout:60000
 		});
 	};
@@ -434,7 +436,7 @@ function RestServiceJs(newurl) {
 		$.ajax({
 			url: turl,
 			success: callback,
-			error: function(req, status, ex) {},
+			error: LocalGed.restError,
 			timeout:60000
 		});
 	}
@@ -452,6 +454,14 @@ LocalGed.doOnEnter = function(event,func) {
 	}
 	return true;
 };
+LocalGed.notify = function(page,kind,msg) {
+	var div = $('#' +page +'-notify');
+	div.empty();
+	var html = '<span class="label label-'+kind+'">' + msg +'</span>';
+	div.append(html);
+	
+	div.fadeIn().delay(4000).fadeOut('slow'); 
+}
 /**
  * Confirm
  */
@@ -460,6 +470,16 @@ LocalGed.doConfirm = function(msg, func) {
 	$("#diaConfirmMessage").html(msg);
 	$("#diaConfirm").modal('show');
 };
+/**
+ * Handle rest error
+ */
+LocalGed.restError = function (req, status, ex) {
+	var msg = "Error " + status + " while executing "+req;
+	if (ex) {
+		msg += "\n" + ex;
+	}
+	LocalGed.doError(msg);
+}
 /**
  * Error
  */

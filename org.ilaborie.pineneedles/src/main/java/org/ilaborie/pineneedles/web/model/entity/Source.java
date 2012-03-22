@@ -43,7 +43,7 @@ public class Source implements ISource {
 	@ManyToOne
 	@XmlIDREF
 	private Shelf shelf;
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

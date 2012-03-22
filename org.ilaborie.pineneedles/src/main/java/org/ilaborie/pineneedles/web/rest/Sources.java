@@ -17,12 +17,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
+import org.ilaborie.pineneedles.web.model.Message;
 import org.ilaborie.pineneedles.web.model.entity.Shelf;
 import org.ilaborie.pineneedles.web.model.entity.Source;
 import org.slf4j.Logger;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 /**
@@ -59,7 +63,6 @@ public class Sources {
 		query.setParameter("shelf", shelf);
 
 		return Lists.newArrayList(query.getResultList());
-
 	}
 
 	/**
@@ -70,9 +73,18 @@ public class Sources {
 	 */
 	@GET
 	@Path("{id}")
-	public Source findById(@PathParam("id") String id) {
+	public Response findById(@PathParam("id") String id) {
 		logger.info("Sources#FindById() : {}", this.uriInfo.getAbsolutePath());
-		return this.em.find(Source.class, id);
+
+		Source source = this.em.find(Source.class, id);
+
+		Response response;
+		if (source == null) {
+			response = Response.status(Status.NO_CONTENT).build();
+		} else {
+			response = Response.ok(source).build();
+		}
+		return response;
 	}
 
 	/**
@@ -83,10 +95,20 @@ public class Sources {
 	 */
 	@DELETE
 	@Path("{id}")
-	public void deleteById(@PathParam("id") String id) {
+	public Response deleteById(@PathParam("id") String id) {
 		logger.info("Sources#deleteById() : {}", this.uriInfo.getAbsolutePath());
-		Source entity = this.em.find(Source.class, id);
-		this.em.remove(entity);
+
+		try {
+			Source entity = this.em.find(Source.class, id);
+			if (entity == null) {
+				return Response.status(Status.BAD_REQUEST)
+				        .entity(new Message("Could not find the source: " + id)).build();
+			}
+			this.em.remove(entity);
+			return Response.ok("Source deleted: " + id).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+		}
 	}
 
 	/**
@@ -97,22 +119,51 @@ public class Sources {
 	 */
 	@PUT
 	@Path("{shelfId}")
-	public Source createOrUpdate(@PathParam("shelfId") String shelfId, Source entity) {
+	public Response createOrUpdate(@PathParam("shelfId") String shelfId, Source entity) {
 		logger.info("Sources#createOrUpdate() : {}", this.uriInfo.getAbsolutePath());
 
-		Shelf shelf = this.em.find(Shelf.class, shelfId);
-		if (entity.getId() == null) {
-			// Create
-			entity.setId(this.createId());
-			entity.setShelf(shelf);
-			this.em.persist(entity);
-		} else {
-			// Update
-			entity.setShelf(shelf);
-			this.em.merge(entity);
+		String name = entity.getName();
+		String description = entity.getDescription();
+
+		if (Strings.isNullOrEmpty(name)) {
+			return Response
+			        .status(Response.Status.BAD_REQUEST)
+			        .entity(new Message("'name' parameter must not be null"))
+			        .build();
 		}
 
-		return entity;
+		// Clean fields
+		entity.setName(name.trim());
+		if (description != null) {
+			entity.setDescription(Strings.nullToEmpty(description.trim()));
+		}
+
+		try {
+			Shelf shelf = this.em.find(Shelf.class, shelfId);
+			if (shelf == null) {
+				return Response.status(Status.BAD_REQUEST)
+				        .entity(new Message("Could not find the shelf: " + shelfId))
+				        .build();
+			}
+
+			entity.setShelf(shelf);
+
+			Response response;
+			if (entity.getId() == null) {
+				// Create
+				entity.setId(this.createId());
+				this.em.persist(entity);
+				response = Response.status(Status.CREATED).entity(entity).build();
+			} else {
+				// Update
+				entity.setShelf(shelf);
+				this.em.merge(entity);
+				response = Response.ok(entity).build();
+			}
+			return response;
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+		}
 	}
 
 	/**

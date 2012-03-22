@@ -16,11 +16,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.ilaborie.pineneedles.web.model.Message;
 import org.ilaborie.pineneedles.web.model.entity.Shelf;
 import org.slf4j.Logger;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 /**
@@ -64,9 +68,17 @@ public class Shelves {
 	 */
 	@GET
 	@Path("{id}")
-	public Shelf findById(@PathParam("id") String id) {
+	public Response findById(@PathParam("id") String id) {
 		logger.info("Shelves#FindById() : {}", this.uriInfo.getAbsolutePath());
-		return this.em.find(Shelf.class, id);
+		Shelf shelf = this.em.find(Shelf.class, id);
+
+		Response response;
+		if (shelf == null) {
+			response = Response.status(Status.NO_CONTENT).build();
+		} else {
+			response = Response.ok(shelf).build();
+		}
+		return response;
 	}
 
 	/**
@@ -77,11 +89,23 @@ public class Shelves {
 	 */
 	@DELETE
 	@Path("{id}")
-	public void deleteById(@PathParam("id") String id) {
+	public Response deleteById(@PathParam("id") String id) {
 		logger.info("Shelves#deleteById() : {}", this.uriInfo.getAbsolutePath());
-		Shelf entity = this.em.find(Shelf.class, id);
-		this.em.remove(entity);
+
+		try {
+			Shelf entity = this.em.find(Shelf.class, id);
+			if (entity == null) {
+				return Response.status(Status.BAD_REQUEST)
+				        .entity( new Message("Could not find the shelf: " + id)).build();
+			}
+
+			this.em.remove(entity);
+			return Response.ok( new Message("Shelf deleted: " + id)).build();
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+		}
 	}
+
 
 	/**
 	 * Creates the.
@@ -90,19 +114,40 @@ public class Shelves {
 	 * @return the shelf
 	 */
 	@PUT
-	public Shelf createOrUpdate(Shelf entity) {
+	public Response createOrUpdate(Shelf entity) {
 		logger.info("Shelves#create() : {}", this.uriInfo.getAbsolutePath());
+		String name = entity.getName();
+		String description = entity.getDescription();
 
-		if (entity.getId() == null) {
-			// Create
-			entity.setId(this.createId());
-			this.em.persist(entity);
-		} else {
-			// Update
-			this.em.merge(entity);
+		if (Strings.isNullOrEmpty(name)) {
+			return Response
+			        .status(Response.Status.BAD_REQUEST)
+			        .entity( new Message("'name' parameter must not be null"))
+			        .build();
 		}
 
-		return entity;
+		// Clean fields
+		entity.setName(name.trim());
+		if (description != null) {
+			entity.setDescription(Strings.nullToEmpty(description.trim()));
+		}
+
+		try {
+			Response response;
+			if (entity.getId() == null) {
+				// Create
+				entity.setId(this.createId());
+				this.em.persist(entity);
+				response = Response.status(Status.CREATED).entity(entity).build();
+			} else {
+				// Update
+				this.em.merge(entity);
+				response = Response.ok(entity).build();
+			}
+			return response;
+		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+		}
 	}
 
 	/**

@@ -56,17 +56,12 @@ Ideas
 
 ### Administration
 
-* Trim String
-* Control Rest (check fields validity)
-* Handle error with dialog when REST client fail
-* Notify Update shelf OK
-* Add delete btw on shelf detail
 * Handle invalid field UI ?
 * Allow Markdown as description formatting
 
 ### About
 
-* Shiny HTML5 Canvas animation
+* Shiny HTML5 Canvas animation (pine cone fall, + rotating)
 
 
 ### Possible Background
