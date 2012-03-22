@@ -5,6 +5,7 @@ var LocalGed = {
 	currentPage : 'search', 				// Between 'search', 'admin', ‘about‘
 	shelf : null,							// Current shelf
 	source : null,							// Current source
+	confirm: null,							// Confirm function
 	debug : true							// Debug mode
 };
 
@@ -30,8 +31,11 @@ $(document).ready(function() {
 	$("#btnAddShelf").click(LocalGed.addShelf);
 	$("#btnBackShelves").click(LocalGed.backShelves);
 	$("#btnSaveShelf").click(LocalGed.saveShelf);
-	$("#shelf-create-name").keypress(LocalGed.createShelf);
+	$("#shelf-create-name").keypress(LocalGed.handleCreateShelf);
 	$("#btnCreateShelf").click(LocalGed.createShelf);
+	$("#diaNewShelf").on('shown', function() { 
+		$("#shelf-create-name").focus(); 
+	});
 	
 	// Sources Administration
 	$("#btnBackShelf").click(LocalGed.backShelf);
@@ -40,6 +44,17 @@ $(document).ready(function() {
 	$(".delSource").click(LocalGed.deleteSource);
 	$("#btnCreateShelf").click(LocalGed.createSource);
 	$("#btnSaveShelf").click(LocalGed.saveSource);
+	
+	// Utilities
+	$("#diaConfirm").on('shown', function() { 
+		$("#btnConfirm").focus(); 
+	});
+	$("#btnConfirm").click(function(){
+		$("#diaConfirm").modal('hide');
+		if (LocalGed.confirm) {
+			LocalGed.confirm();
+		}
+	});
 	
 	// Initial State
 	LocalGed.showSearch();
@@ -123,6 +138,8 @@ LocalGed.showShelf = function () {
  * Show Shelf creation dialog
  */
 LocalGed.addShelf = function() {
+	$("#shelf-create-name").attr("value","");
+	$("#shelf-create-description").attr("value","");
 	$("#diaNewShelf").modal('show');
 };
 /**
@@ -172,7 +189,9 @@ LocalGed.deleteShelf = function() {
 		// REST delete shelf/{id}
 		var shelves = new RestServiceJs("rest/shelves");
 		shelves.remove(id, function() {
-			LocalGed.loadShelves(); 
+			// Display
+			$("#shelf-"+id).hide();
+			$("#shelf-"+id).detach();
 		});
 	});
 };
@@ -193,6 +212,12 @@ LocalGed.saveShelf = function() {
 		$("#shelf-description").attr("value",json.description)		
 	});
 };
+/**
+ * Handle Create Shelf
+ */
+LocalGed.handleCreateShelf = function(e) {
+	LocalGed.doOnEnter(e,LocalGed.createShelf);
+}
 /**
  * Create the current shelf
  */
@@ -226,22 +251,20 @@ LocalGed.loadShelves = function() {
 	var shelves = new RestServiceJs("rest/shelves");
 	shelves.findAll(function(json) {
 		// Refresh shelves
-		$("#shelves .row").html('');
+		$("#shelves .row").empty();
 		// TODO mustache.js
 		$.each(json, function(index,s){
-			var html = '';
-			var id= s.id;
-			html += '<div id="shelf-'+id+'" class="span10 shelf offset1">';
-			html += '<h2>'+s.name+'</h2>';
-			html += '<p>'+s.description+'</p>';
-			html += '<a id="btnShowShelf-'+id+'" class="btn showShelf" href="#">View details &raquo;</a>';
-			html += '<div class="pull-right"><a id="btnDelShelf-'+id+'" class="btn btn-danger delShelf" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>';
-			html += '</div>'
-			$("#shelves .row").append(html);
+			var id = s.id;
 
+			var html= ich.shelf(s);
+			$("#shelves .row").append(html);
+			
 			// bind actions
 			$("#btnShowShelf-"+id).click(LocalGed.showShelf);
 			$("#btnDelShelf-"+id).click(LocalGed.deleteShelf);
+			
+			// Display
+			$("#shelf-"+id).fadeIn();
 		});
 	});
 	
@@ -422,8 +445,8 @@ function RestServiceJs(newurl) {
  * Do on Enter
  */
 LocalGed.doOnEnter = function(event,func) {
-	if (e.which==13)  {
-		e.preventDefault();
+	if (event.which==13)  {
+		event.preventDefault();
 		func();
 		return false;
 	}
@@ -433,9 +456,9 @@ LocalGed.doOnEnter = function(event,func) {
  * Confirm
  */
 LocalGed.doConfirm = function(msg, func) {
-	if (confirm(msg)) {
-		func();
-	}
+	LocalGed.confirm = func; 
+	$("#diaConfirmMessage").html(msg);
+	$("#diaConfirm").modal('show');
 };
 /**
  * Error

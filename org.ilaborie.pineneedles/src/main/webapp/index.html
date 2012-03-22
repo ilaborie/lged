@@ -7,8 +7,8 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-	<title>Local GED</title>
-	<meta name="description" content="A Local GED Frontend">
+	<title>Pine Needles</title>
+	<meta name="description" content="A Pine Needles Frontend">
 	<meta name="author" content="Igor Laborie <ilaborie@gmail.com>">
 
 	<meta name="viewport" content="width=device-width">
@@ -17,6 +17,31 @@
 	<link type="text/css" rel="stylesheet" href="less/style.css">
 
 	<script src="js/libs/modernizr-2.5.3-respond-1.1.0.min.js"></script>
+	<!--  Shelf Template -->
+	<script id="shelf" type="text/html">
+		<div id="shelf-{{id}}" class="span10 shelf offset1" style="display: none;">
+			<h2>{{name}}</h2>
+			<p>{{description}}</p>
+			<a id="btnShowShelf-{{id}}" class="btn showShelf" href="#">View details &raquo;</a>
+			<div class="pull-right"><a id="btnDelShelf-{{id}}" class="btn btn-danger delShelf" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
+		</div>
+	</script>
+	<!--  Source Template -->
+	<script id="source" type="text/html">
+		<div id="source-{{id}}" class="source">
+			<h2>{{name}}</h2>
+			<p>{{description}}</p>
+			<a id="btnShowSource-{{id}}" class="btn showSource" href="#">View details &raquo;</a>
+			<div class="pull-right"><a id="btnDelSource-{{id}}" class="btn btn-danger delSource" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
+		</div>
+	</script>
+	<script id="doc" type="text/html">
+		<div id="doc-{{id}}" class="span10 offset1 result">
+			<h3><a href="{{link}}">{{}}</a></h3>
+			<div class="location">{{location}}</div>
+			<div class="teaser">{{teaser}}</div>					
+		</div>
+	</script>
 </head>
 <body>
 <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
@@ -29,7 +54,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</a>
-			<a class="brand" href="#">LocalGED</a>
+			<a class="brand" href="#">PineNeedles</a>
 			<div class="nav-collapse">
 				<ul class="nav">
 					<li><a id="search">Search</a></li>
@@ -48,7 +73,7 @@
 		<div id="search-input">
 			<form action="search" class="well form-search">
 				<input type="text" title="Query" name="q" id="q" class="input-medium search-query" value="" placeholder="Type your query">
-				<button type="submit" id="btnSearch" class="btn btn-success" style="margin-left :-16px;vertical-align: top;"><i class="icon-search icon-white"></i></button>
+				<button type="submit" id="btnSearch" class="btn btn-primary" style="margin-left :-16px;vertical-align: top;"><i class="icon-search icon-white"></i></button>
 			</form>
 		</div>
 		<div id="search-result" class=hidden">
@@ -78,13 +103,8 @@
 		<!-- Shelve list -->
 		<div id="shelves">
 			<p><a href="#" id="btnAddShelf" class="btn btn-primary">Add a new Shelf</a></p>
-			<div class="row">
-<!-- 				<div id="shelf-1" class="span10 shelf offset1"> -->
-<!-- 					<h2>Shelf One</h2> -->
-<!-- 					<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p> -->
-<!-- 					<a id="btnShowShelf-1" class="btn showShelf" href="#">View details &raquo;</a> -->
-<!-- 					<div class="pull-right"><a id="btnDelShelf-1" class="btn btn-danger delShelf" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div> -->
-<!-- 				</div> -->
+			<div class="row" >
+				<!-- Fill with Javascript -->
 			</div>
 		</div>
 		
@@ -117,7 +137,9 @@
 					<label for="shelf-description" >Description</label>
  					<textarea title="Description" name="description" id="shelf-description" class="span9" placeholder="Shelf description...">
 					</textarea>
-					<div class="pull-right"><a id="btnSaveShelf" class="btn btn-primary" href="#">Update</a></div>
+					<div class="pull-right">
+						<a id="btnSaveShelf" class="btn btn-primary" href="#">Update</a>
+					</div>
 				</form>
 				<div class="span10 offset1">
 					<hr />
@@ -199,6 +221,21 @@
 			<p><a href="mailto:ilaborie@gmail.com" class="btn btn-primary">Feedback &raquo;</a></p>
 		</div>
 	</div>
+	
+	<!-- Confirm Dialog -->
+	<div id="diaConfirm" class="modal fade">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">×</a>
+			<h3>Confirm</h3>
+		</div>
+		<div id="diaConfirmMessage" class="modal-body max-height">
+			<!-- Fill by Javascript -->
+		</div>
+		<div class="modal-footer">
+			<a id="btnConfirm" href="#" class="btn btn-primary">Confirm</a>
+			<a id="btnConfirmCancel" href="#" class="btn" data-dismiss="modal">Cancel</a>
+		</div>
+	</div>
 
 	<hr />
 	<footer>
@@ -210,16 +247,9 @@
 <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
 
 <script src="js/libs/bootstrap/bootstrap.min.js"></script>
+<script src="js/libs/ICanHaz.min.js"></script>
 
 <script src="js/script.js"></script>
-<!-- 
-<script>
-	var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-	(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-	g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-	s.parentNode.insertBefore(g,s)}(document,'script'));
-</script>
- -->
 
 </body>
 </html>

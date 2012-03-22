@@ -1,3 +1,4 @@
+
 @import "bootstrap/bootstrap.less";
 
 body {
@@ -6,7 +7,6 @@ body {
 }
 
 @import "bootstrap/responsive.less";
-
 
 /* ===== Primary Styles ========================================================
    Author: Igor Laborie <ilaborie@gmail.com>
@@ -17,6 +17,9 @@ body {
 @colorSource: #E5F7FF;
 
 @colorLocation: #0D633C;
+
+@navbarBackgroundHighlight: #408000;
+@navbarBackground: darken(@navbarBackgroundHighlight,10%);
 
 // Size
 @textareaHeight: 5.6em;
@@ -36,6 +39,14 @@ footer {
 	border-width: medium;
 	border-style: solid;
 	border-color: darken(@color,25%);
+}
+
+// Navbar
+.navbar-inner {
+  #gradient > .vertical(@navbarBackgroundHighlight, @navbarBackground);
+ }
+.brand {
+	text-shadow: 2px 2px 2px rgba(255,255,255,.5);
 }
 
 // Forms

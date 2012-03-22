@@ -56,23 +56,20 @@ Ideas
 
 ### Administration
 
-* Animation when display shelves
-* Cool Dialog for Delete confirmation
+* Trim String
 * Control Rest (check fields validity)
 * Handle error with dialog when REST client fail
 * Notify Update shelf OK
 * Add delete btw on shelf detail
-* Trim String
 * Handle invalid field UI ?
-* Use Mustache.js and ICanHaz.js to render Shelf, Source, …
-* Allow Markdown as description formating
+* Allow Markdown as description formatting
 
 ### About
 
 * Shiny HTML5 Canvas animation
 
 
-### Images
+### Possible Background
 
 <https://secure.flickr.com/photos/24557420@N05/3975359536/sizes/o/in/photostream/>
 <https://secure.flickr.com/photos/nouspique/4633864261/sizes/o/in/photostream/>
