@@ -42,6 +42,13 @@
 			<div class="teaser">{{teaser}}</div>					
 		</div>
 	</script>
+	<script id="notify" type="text/html">
+		<div class="alert alert-{{kind}}">
+			<a class="close" data-dismiss="alert">×</a>
+			<h4 class="alert-heading">{{title}}</h4>
+			{{message}}					
+		</div>
+	</script>
 </head>
 <body>
 <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
@@ -95,9 +102,9 @@
 	
 	<!-- Admin Page -->
 	<div id="admin-content" class="content hidden">
-		<div class="hero-unit">
-			<h1>Administration</h1>
-			<p>Create or edit a Shelf</p>
+		<div class="page-header">
+  			<h1>Administration</h1>
+  			Manage Shelves and Sources
 		</div>
 		<div id="admin-notify">
 			<!-- Fill y Javascript -->

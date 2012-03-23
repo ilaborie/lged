@@ -32,6 +32,7 @@ $(document).ready(function() {
 	$("#btnBackShelves").click(LocalGed.backShelves);
 	$("#btnSaveShelf").click(LocalGed.saveShelf);
 	$("#shelf-create-name").keypress(LocalGed.handleCreateShelf);
+	$("#shelf-name").keypress(LocalGed.handleUpdateShelf);
 	$("#btnCreateShelf").click(LocalGed.createShelf);
 	$("#diaNewShelf").on('shown', function() { 
 		$("#shelf-create-name").focus(); 
@@ -221,6 +222,12 @@ LocalGed.handleCreateShelf = function(e) {
 	LocalGed.doOnEnter(e,LocalGed.createShelf);
 }
 /**
+ * Handle Update Shelf
+ */
+LocalGed.handleUpdateShelf = function(e) {
+	LocalGed.doOnEnter(e,LocalGed.saveShelf);
+}
+/**
  * Create the current shelf
  */
 LocalGed.createShelf = function() {
@@ -231,6 +238,7 @@ LocalGed.createShelf = function() {
 	var shelves = new RestServiceJs("rest/shelves");
 	shelves.put(shelf, function(json) {
 		$('#diaNewShelf').modal('hide');
+		LocalGed.shelf = JSON.parse(json).id;
 		LocalGed.loadShelves();
 	});
 };
@@ -268,6 +276,11 @@ LocalGed.loadShelves = function() {
 			// Display
 			$("#shelf-"+id).fadeIn();
 		});
+		
+		if (LocalGed.shelf) {
+			$("#btnShowShelf-"+LocalGed.shelf).focus();
+			LocalGed.shelf = null;
+		}
 	});
 	
 }
@@ -454,12 +467,31 @@ LocalGed.doOnEnter = function(event,func) {
 	}
 	return true;
 };
-LocalGed.notify = function(page,kind,msg) {
+/**
+ * Show notify block
+ */
+LocalGed.notify = function(page,kind,message) {
 	var div = $('#' +page +'-notify');
 	div.empty();
-	var html = '<span class="label label-'+kind+'">' + msg +'</span>';
+	
+	var data ={};
+	data.kind = kind;
+	data.message = message;
+	
+	if (kind=='success') {
+		data.title = "Yeah !";
+	} else if (kind=='error') {
+		data.title = "Ooops !";
+	} else if (kind=='info') {
+		data.title = "Yop !";
+	} else {
+		data.title = "Hey !";
+	}
+	
+	var html = ich.notify(data);
 	div.append(html);
 	
+	// Animate
 	div.fadeIn().delay(4000).fadeOut('slow'); 
 }
 /**
