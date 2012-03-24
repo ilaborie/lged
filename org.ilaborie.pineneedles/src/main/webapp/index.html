@@ -10,11 +10,15 @@
 	<title>Pine Needles</title>
 	<meta name="description" content="A Pine Needles Frontend">
 	<meta name="author" content="Igor Laborie <ilaborie@gmail.com>">
-
 	<meta name="viewport" content="width=device-width">
 
+	<!-- Search -->
+	<link rel="search" type="application/opensearchdescription+xml" title="PineNeedles" href="/org.ilaborie.pineneedles/opensearch.xml">
+
+	<!-- Fonts -->
+	<link href='http://fonts.googleapis.com/css?family=Mystery+Quest' rel='stylesheet' type='text/css'>
 	<!-- Less -->
-	<link type="text/css" rel="stylesheet" href="less/style.css">
+	<link type="text/css" rel="stylesheet" href="style/style.css">
 
 	<script src="js/libs/modernizr-2.5.3-respond-1.1.0.min.js"></script>
 	<!--  Shelf Template -->
@@ -29,7 +33,8 @@
 	<!--  Source Template -->
 	<script id="source" type="text/html">
 		<div id="source-{{id}}" class="source">
-			<h2>{{name}}</h2>
+			<h2>{{name}}&nbsp;<span class="label label-{{kind}}">{{kindLabel}}</span></h2>
+			<div class="location">{{detail}}</div>
 			<p>{{description}}</p>
 			<a id="btnShowSource-{{id}}" class="btn showSource" href="#">View details &raquo;</a>
 			<div class="pull-right"><a id="btnDelSource-{{id}}" class="btn btn-danger delSource" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
@@ -102,10 +107,21 @@
 	
 	<!-- Admin Page -->
 	<div id="admin-content" class="content hidden">
-		<div class="page-header">
-  			<h1>Administration</h1>
-  			Manage Shelves and Sources
+		<div class="page-header well">
+  			<h1>Administration <small>Manage Shelves and Sources</small></h1>
 		</div>
+		<ul id="breadcrumb-shelves" class="breadcrumb">
+			<li class="active">Shelves</li>
+		</ul>
+		<ul id="breadcrumb-shelf" class="breadcrumb hidden">
+			<li><a class="returnToShelves" href="#">Shelves</a> <span class="divider">></span></li>
+			<li class="active">Shelf</li>
+		</ul>
+		<ul id="breadcrumb-source" class="breadcrumb hidden">
+			<li><a class="returnToShelves" href="#">Shelves</a> <span class="divider">></span></li>
+			<li><a class="returnToShelf" href="#">Shelf</a> <span class="divider">></span></li>
+			<li class="active">Source</li>
+		</ul>
 		<div id="admin-notify">
 			<!-- Fill y Javascript -->
 		</div>
@@ -197,11 +213,11 @@
 				<hr />
 				<div id="source-folders-create-detail" class="hidden">
 					<label for="source-create-folder" class="mandatory">Folder</label>
-					<input type="text" title="Folder" value="" name="source-create-folder" id="source-create-folder" placeholder="Folder to index" />
+					<input type="text" title="Folder" value="" name="source-create-folder" id="source-create-folder" required="required" placeholder="Folder to index" />
 				
 					<br/>
-					<label for="source-recursif" class="checkbox" >
-						<input type="checkbox" title="Recursif" name="source-recursif" id="source-create-recursif" /> Recursive
+					<label for="source-create-recursif" class="checkbox" >
+						<input type="checkbox" title="Recursif" name="source-create-recursif" id="source-create-recursif" /> Recursive
 					</label>
 				</div>
 				<div id="source-links-create-detail" class="hidden">
@@ -220,7 +236,7 @@
 			<p><a href="#" id="btnBackShelf" class="btn">&laquo; Back to Shelf</a></p>
 			<div class="row">
 				<form id="source-form" class="well span10 offset1">
-					<input type="hidden" name="source-id" value=""/>
+					<input type="hidden" name="source-id" id="source-id" value=""/>
 					<label for="source-name" class="mandatory">Name</label>
 					<input type="text" value="" title="Name" name="name" id="source-name" required="required" placeholder="Source name" class="span5"/>
 					<label for="source-description" >Description</label>
@@ -229,8 +245,8 @@
 					<hr />
 					<div id="source-folder-detail" class="hidden">
 						<!-- Special Folder source -->
-						<label for="source-folder" class="mandatory">Folder</label>
-						<input type="text" title="Folder" value="" name="source-folder-display" id="source-folder-field" class="span5"/>
+						<label for="source-folder-field" class="mandatory">Folder</label>
+						<input type="text" title="Folder" value="" name="source-folder-field" id="source-folder-field" class="span5"/>
 	
 						<label for="source-recursif" class="checkbox">
 							<input type="checkbox" title="Recursif" name="source-recursif" id="source-recursif"/> Recursive

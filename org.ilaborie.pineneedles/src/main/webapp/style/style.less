@@ -47,7 +47,20 @@ footer {
  }
 .brand {
 	text-shadow: 2px 2px 2px rgba(255,255,255,.5);
+	font-family: 'Mystery Quest', cursive;
+	font-size: 160%;
+	font-weight: bold;
 }
+/*
+body {
+	background-image: url(https://twimg0-a.akamaihd.net/images/themes/theme5/bg.gif);
+	background-position: left 40px;
+	background-attachment: fixed;
+	background-repeat: repeat;
+	background-repeat: no-repeat;
+	background-color: #352726;
+}
+*/
 
 // Forms
 .mandatory {
@@ -69,6 +82,7 @@ footer {
 
 // Search
 #search-result {
+	.well();
 	#search-result-info {
 		color: @gray;
 		font-style: italic;
@@ -95,7 +109,8 @@ footer {
 }
 #shelf-form {
 	background-color: @colorShelf;
-	border-color: darken(@colorShelf,25%);	
+	border-color: darken(@colorShelf,25%);
+	border-weight: medium;
 }
 #shelf-description {
 	height: @textareaHeight;
@@ -103,10 +118,14 @@ footer {
 
 .source {
 	.box(@colorSource);
+	.location {
+		color: @colorLocation;
+	}
 }
 #source-form {
 	background-color: @colorSource;
 	border-color: darken(@colorSource,25%);	
+	border-weight: medium;
 }
 #source-description {
 	height: @textareaHeight;
