@@ -2,6 +2,8 @@ package org.ilaborie.pineneedles.web.model.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -18,12 +20,13 @@ import org.ilaborie.pineneedles.web.model.ISource;
  * The Class ShelfEntity.
  */
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement(name = "source")
 @NamedQueries(@NamedQuery(name = Source.QUERY_FIND_BY_SHELF, query = "From Source s Where s.shelf = :shelf"))
 public class Source implements ISource {
 
 	/** The Constant QUERY_FIND_ALL. */
-	public static final String QUERY_FIND_BY_SHELF = "Source.bySlef";
+	public static final String QUERY_FIND_BY_SHELF = "Source.byShelf";
 
 	/** The id. */
 	@Id
@@ -43,7 +46,7 @@ public class Source implements ISource {
 	@ManyToOne
 	@XmlIDREF
 	private Shelf shelf;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

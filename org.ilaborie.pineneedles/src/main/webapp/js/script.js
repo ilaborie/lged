@@ -30,21 +30,26 @@ $(document).ready(function() {
 	// Shelves Administration
 	$("#btnAddShelf").click(LocalGed.addShelf);
 	$("#btnBackShelves").click(LocalGed.backShelves);
+
 	$("#btnSaveShelf").click(LocalGed.saveShelf);
+	$("#btnCreateShelf").click(LocalGed.createShelf);
+	
 	$("#shelf-create-name").keypress(LocalGed.handleCreateShelf);
 	$("#shelf-name").keypress(LocalGed.handleUpdateShelf);
-	$("#btnCreateShelf").click(LocalGed.createShelf);
 	$("#diaNewShelf").on('shown', function() { 
 		$("#shelf-create-name").focus(); 
 	});
 	
 	// Sources Administration
 	$("#btnBackShelf").click(LocalGed.backShelf);
+	
 	$("#btnAddSource").click(LocalGed.addSource);
-	$(".showSource").click(LocalGed.showSource);
-	$(".delSource").click(LocalGed.deleteSource);
-	$("#btnCreateShelf").click(LocalGed.createSource);
-	$("#btnSaveShelf").click(LocalGed.saveSource);
+	$("#btnAddFolderSource").click(LocalGed.addFolders);
+	$("#btnAddLinksSource").click(LocalGed.addLinks);
+	$("#source-create-type").change(LocalGed.changeSource)
+	
+	$("#btnCreateSource").click(LocalGed.createSource);
+	$("#btnSaveSource").click(LocalGed.saveSource);
 	
 	// Utilities
 	$("#diaConfirm").on('shown', function() { 
@@ -116,7 +121,7 @@ LocalGed.handleSearch = function(e) {
  * Launch search
  */
 LocalGed.doSearch = function() {
-	var query = $("#q").attr("value");
+	var query = $("#q").val();
 	
 	// TODO rest get search/{query}
 
@@ -134,6 +139,8 @@ LocalGed.showShelf = function () {
 	var btn = $(this);
 	var id = btn.attr("id").substring("btnShowShelf-".length);
 	LocalGed.showDetailShelf(id);
+	
+	LocalGed.loadSources(id);
 };
 /**
  * Show Shelf creation dialog
@@ -201,9 +208,9 @@ LocalGed.deleteShelf = function() {
  */
 LocalGed.saveShelf = function() {
 	var shelf = {};
-	shelf.id = $("#shelf-update-id").attr("value");
-	shelf.name = $("#shelf-name").attr("value");
-	shelf.description = $("#shelf-description").attr("value");
+	shelf.id = $("#shelf-update-id").val();
+	shelf.name = $("#shelf-name").val();
+	shelf.description = $("#shelf-description").val();
 	
 	//  REST put shelf
 	var shelves = new RestServiceJs("rest/shelves");
@@ -232,8 +239,8 @@ LocalGed.handleUpdateShelf = function(e) {
  */
 LocalGed.createShelf = function() {
 	var shelf = {};
-	shelf.name = $("#shelf-create-name").attr("value");
-	shelf.description = $("#shelf-create-description").attr("value");
+	shelf.name = $("#shelf-create-name").val();
+	shelf.description = $("#shelf-create-description").val();
 	
 	var shelves = new RestServiceJs("rest/shelves");
 	shelves.put(shelf, function(json) {
@@ -262,7 +269,6 @@ LocalGed.loadShelves = function() {
 	shelves.findAll(function(json) {
 		// Refresh shelves
 		$("#shelves .row").empty();
-		// TODO mustache.js
 		$.each(json, function(index,s){
 			var id = s.id;
 
@@ -282,7 +288,6 @@ LocalGed.loadShelves = function() {
 			LocalGed.shelf = null;
 		}
 	});
-	
 }
 
 //Handle Sources Administration
@@ -302,11 +307,60 @@ LocalGed.showSource = function () {
 	LocalGed.showDetailSource(id);
 };
 /**
-* Create a new Source
-*/
-LocalGed.addSource = function () {
+ * Handle change source
+ */
+LocalGed.changeSource = function(e) {
+	var type = $("#source-create-type").val();
+	if (type=="folders") {
+		$("#source-folders-create-detail").removeClass("hidden");
+		$("#source-links-create-detail").addClass("hidden");
+	} else if (type=="links") {
+		$("#source-folders-create-detail").addClass("hidden");
+		$("#source-links-create-detail").removeClass("hidden");
+	} else {
+		$("#source-folders-create-detail").addClass("hidden");
+		$("#source-links-create-detail").addClass("hidden");
+	}
+}
+/**
+ * Create a new Source
+ */
+LocalGed.addSource = function (type) {
+	var kind = 'folders';
+	if(type=='folders' || type=='links') {
+		kind = type;
+	} else {
+		$("#source-create-type-container").removeClass("hidden");
+	}
+	
+	// Update Select
+	$("#source-create-type").val(kind);
+	LocalGed.changeSource();
+	
+	$("#source-create-type").removeClass("hidden");
+	
+	$("#source-create-name").attr("value","");
+	$("#source-create-description").attr("value","");
+	$("#source-create-folder").attr("value","");
+	$("#source-recursif").attr("checked","checked");
+	$("#source-create-links").attr("value","");
+	
 	$("#diaNewSource").modal('show');
 };
+/**
+ * Add a Folder Source
+ */
+LocalGed.addFolders = function (event) {
+	$("#source-create-type-container").addClass("hidden");
+	LocalGed.addSource("folders");
+}
+/**
+ * Add a Links Source
+ */
+LocalGed.addLinks = function (event) {
+	$("#source-create-type-container").addClass("hidden");
+	LocalGed.addSource("links");
+}
 /**
 * Show source (new or existing)
 * @param id the source id of false
@@ -329,41 +383,98 @@ LocalGed.showDetailSource = function (id) {
 	var descr = $("#source-"+id+" p").text();
 	$("#source-description").attr("value",descr);
 	
-	// TODO REST get source/{id}
-	
 	// Save button
 	$("#btnSaveSource").text("Update");
+
+	// REST get sources/{id}
+	var sources = new RestServiceJs("rest/sources");
+	sources.find(id, function(json) {
+		$("#source-name").attr("value",json.name);
+		$("#source-description").attr("value",json.description);
+		
+		if (json.folder) {
+			$("#source-folder-detail").removeClass("hidden");
+			$("#source-links-detail").addClass("hidden");
+			
+			$("#source-folder-display").attr("value",json.folder);
+			if(json.recursive) {
+				$("#source-recursif").attr("checked","checked");
+			} else {
+				$("#source-recursif").removeAttr("checked");
+			}
+		} else if (json.links) {
+			$("#source-folder-detail").addClass("hidden");
+			$("#source-links-detail").removeClass("hidden");
+			
+			$("#source-links").attr("value",json.links);
+		}
+	});
 };
 /**
  * Update the selected source 
  */
 LocalGed.saveSource = function() {
 	var src = {};
-	src.id = $("#source-id").attr("value");
-	src.name = $("#source-name").attr("value");
-	src.description = $("#source-description").attr("value");
+	src.id = $("#source-id").val();
+	src.name = $("#source-name").val();
+	src.description = $("#source-description").val();
 	
+	var isFolder = !$("#source-folder-detail").hasClass("hidden");
+	
+
 	// Folder attributes 
-	src.folder = $("#source-folder").attr("value");
+	src.folder = $("#source-folder").val();
 	src.recursif = ("checked"==$("#source-recursif").attr("checked"));
 	
-	// TODO REST put source
-	// TODO update field on OK
+	// REST put source
+	var sources;
+	if (isFolder) {
+		sources = new RestServiceJs("rest/folders");
+	} else {
+		sources = new RestServiceJs("rest/links");
+	}
+	sources.put(src, function(json) {
+		// update field on OK
+		$("#source-name").attr("value",json.name);
+		$("#source-description").attr("value",json.description)
+		
+		LocalGed.notify("admin","success","Source updated");
+	});
 };
 /**
  * Create a new source 
  */
 LocalGed.createSource = function() {
 	var src = {};
-	src.name = $("#source-name").attr("value");
-	src.description = $("#source-description").attr("value");
+	src.name = $("#source-create-name").val();
+	src.description = $("#source-create-description").val();
+	src.shelfId = LocalGed.shelf;
 	
-	// Folder attributes 
-	src.folder = $("#source-folder").attr("value");
-	src.recursif = ("checked"==$("#source-recursif").attr("checked"));
-	
-	// TODO REST put source
-	// TODO update field on OK
+	var type = $("#source-create-type").val();
+
+	var sources;
+	if (type=="folders") {
+		// Folder attributes
+		src.path = $("#source-create-folder").val();
+		if($("#source-create-recursif:checked").val()) {
+			src.recursive=true;
+		} else {
+			src.recursive=false;
+		}
+
+		sources = new RestServiceJs("rest/folders");
+	} else if (type=="links") {
+		src.links = $("#source-folder").val();
+		
+		sources = new RestServiceJs("rest/links");
+	} 
+
+	// REST put source
+	sources.put(src , function(json) {
+		$('#diaNewSource').modal('hide');
+		LocalGed.source = JSON.parse(json).id;
+		LocalGed.loadSources(LocalGed.shelf);
+	});
 };
 /**
  * Delete a source
@@ -376,9 +487,42 @@ LocalGed.deleteSource = function() {
 	var msg = "Do you realy want to delete '" + name+"' ?";
 
 	LocalGed.doConfirm(msg, function() {
-		// TODO REST delete shelf/{id}
+		var sources = new RestServiceJs("rest/sources");
+		sources.remove(id, function() {
+			// Display
+			$("#source-"+id).hide();
+			$("#source-"+id).detach();
+		});
 	});
 };
+/**
+ * Load Shelf Sources
+ */
+LocalGed.loadSources = function(shelfId) {
+	var sources = new RestServiceJs("rest/sources/shelf");
+	sources.find(shelfId, function(json) {
+		// Refresh shelves
+		$("#sources").empty();
+		$.each(json, function(index,s){
+			var id = s.id;
+
+			var html= ich.source(s);
+			$("#sources").append(html);
+			
+			// bind actions
+			$("#btnShowSource-"+id).click(LocalGed.showSource);
+			$("#btnDelSource-"+id).click(LocalGed.deleteSource);
+			
+			// Display
+			$("#source-"+id).fadeIn();
+		});
+		
+		if (LocalGed.source) {
+			$("#btnShowSource-"+LocalGed.source).focus();
+			LocalGed.source = null;
+		}
+	});
+}
 
 // REST
 function RestServiceJs(newurl) {

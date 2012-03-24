@@ -153,21 +153,21 @@
 				</form>
 				<div class="span10 offset1">
 					<hr />
-					<p><a href="#" id="btnAddSource" class="btn btn-primary">Add a new Source</a></p>
+					<p>
+						<div class="btn-group">
+  							<button id="btnAddSource" class="btn btn-primary">Add a new Source</button>
+  							<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
+    							<span class="caret"></span>
+  							</button>
+  							<ul class="dropdown-menu">
+  								<li><a id="btnAddFolderSource" href="#">Folder Source</a></li>
+  								<li><a id="btnAddLinksSource" href="#">Links Source</a></li>
+  							</ul>
+						</div>
+					</p>
 				</div>
 				<div id="sources" class="span10 offset1">
-					<div id="source-1" class="source">
-						<h2>Source One</h2>
-						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-						<a id="btnShowSource-1" class="btn showSource" href="#">View details &raquo;</a>
-						<div class="pull-right"><a id="btnDelSource-1" class="btn btn-danger delSource" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
-					</div>
-					<div id="source-2" class="source">
-						<h2>Source Two</h2>
-						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-						<a id="btnShowSource-2" class="btn showSource" href="#">View details &raquo;</a>
-						<div class="pull-right"><a id="btnDelSource-2" class="btn btn-danger delSource" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
-					</div>
+					<!-- Fill by Javascript -->
 				</div> 
 			</div>
 		</div>
@@ -179,18 +179,36 @@
 				<h3>Create a new Source</h3>
 			</div>
 			<div class="modal-body max-height">
+				<div id="source-create-type-container">
+					<label for="source-create-type" class="mandatory">Type</label>
+					<select id="source-create-type" name="source-create-type">
+						<option value="folders">Folder</option>
+						<option value="links">Links</option>
+					</select>
+				</div>
+				
 				<label for="source-create-name" class="mandatory">Name</label>
 				<input type="text" value="" title="Name" name="name" id="source-create-name" required="required" placeholder="Source name"/>
+				
 				<label for="source-create-description" >Description</label>
  				<textarea title="Description" name="description" id="source-create-description" placeholder="Source description...">
 				</textarea>
+				
 				<hr />
-				<label for="source-create-folder" class="mandatory">Folder</label>
-				<input type="text" title="Folder" value="" name="source-create-folder" id="source-create-folder" placeholder="Folder to index"/>
-				<br/>
-				<label for="source-recursif" class="checkbox" >
-					<input type="checkbox" title="Recursif" name="source-recursif" id="source-create-recursif" /> Recursive
-				</label>
+				<div id="source-folders-create-detail" class="hidden">
+					<label for="source-create-folder" class="mandatory">Folder</label>
+					<input type="text" title="Folder" value="" name="source-create-folder" id="source-create-folder" placeholder="Folder to index" />
+				
+					<br/>
+					<label for="source-recursif" class="checkbox" >
+						<input type="checkbox" title="Recursif" name="source-recursif" id="source-create-recursif" /> Recursive
+					</label>
+				</div>
+				<div id="source-links-create-detail" class="hidden">
+					<label for="source-create-links" class="mandatory">Links</label>
+	 				<textarea title="Links" name="source-create-links" id="source-create-links" required="required" placeholder="Links...">
+					</textarea>
+				</div>
 			</div>
 			<div class="modal-footer">
 				<a id="btnCreateSource" href="#" class="btn btn-primary">Create</a>
@@ -209,14 +227,21 @@
  					<textarea title="Description" name="description" id="source-description" class="span9" placeholder="Source description...">
 					</textarea>
 					<hr />
-					<!-- Special Folder source -->
-					<label for="source-folder" class="mandatory">Folder</label>
-					<input type="text" title="Folder" value="" name="source-folder-display" id="source-folder-field" class="span5"/>
-
-					<label for="source-recursif" class="checkbox">
-						<input type="checkbox" title="Recursif" name="source-recursif" id="source-recursif"/> Recursive
-					</label>
-					<!-- TODO includes, excludes -->
+					<div id="source-folder-detail" class="hidden">
+						<!-- Special Folder source -->
+						<label for="source-folder" class="mandatory">Folder</label>
+						<input type="text" title="Folder" value="" name="source-folder-display" id="source-folder-field" class="span5"/>
+	
+						<label for="source-recursif" class="checkbox">
+							<input type="checkbox" title="Recursif" name="source-recursif" id="source-recursif"/> Recursive
+						</label>
+						<!-- TODO includes, excludes -->
+					</div>
+					<div id="source-folder-detail" class="hidden">
+						<label for="source-links" class="mandatory">Links</label>
+		 				<textarea title="Links" name="source-links" id="source-links" required="required" placeholder="Links...">
+						</textarea>
+					</div>
 					<div class="pull-right"><a id="btnSaveSource" class="btn btn-primary" href="#"></a></div>
 				</div>
 			</div>

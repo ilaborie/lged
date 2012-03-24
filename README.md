@@ -40,6 +40,17 @@ Should return the created/updated shelf
 
 	curl -XGET http://localhost:8080/org.ilaborie.pineneedles/rest/shelves
 	
+### Sources
+
+Read on <http://localhost:8080/org.ilaborie.pineneedles/rest/sources>
+Update folder on <http://localhost:8080/org.ilaborie.pineneedles/rest/folders>
+Update links on <http://localhost:8080/org.ilaborie.pineneedles/rest/links>
+
+### Get Source
+### Get all Sources
+### Delete Source
+### Create/Update folder source
+### Create/Update link source
 
 Ideas
 -----
@@ -56,13 +67,23 @@ Ideas
 
 ### Administration
 
+* Add Breadcrumb: **Shelves > Shelf > Sources > Source**
+* Add a .label for source type: folder~warn  link~info
+* Change source dialog title func(kind)
+* Focus on Source Dialog
+* Focus on Detail Shelf
+* Focus on Detail Source
+* Enter on Source dialog field
+
+* Handle exclude Pattern for Folder Sources
+* Handle Field info for links source textarea
+* Disable 'Update' btw if not changed
 * Handle invalid field UI ?
 * Allow Markdown as description formatting
 
 ### About
 
 * Shiny HTML5 Canvas animation (pine cone fall, + rotating)
-
 
 ### Possible Background
 
