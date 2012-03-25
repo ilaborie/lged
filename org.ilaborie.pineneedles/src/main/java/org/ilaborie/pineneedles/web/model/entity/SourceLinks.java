@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -17,6 +18,7 @@ public class SourceLinks extends Source {
 
 	/** The links. */
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@OrderBy("title DESC")
 	private Set<LinkEntry> links;
 
 	/**

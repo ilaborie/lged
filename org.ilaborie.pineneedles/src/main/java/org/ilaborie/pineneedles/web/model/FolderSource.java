@@ -23,6 +23,30 @@ public class FolderSource extends BaseSource {
 	public FolderSource() {
 		super();
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.ilaborie.pineneedles.web.model.BaseSource#getDetail()
+	 */
+	@Override
+	public String getDetail() {
+	    return this.getPath();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.ilaborie.pineneedles.web.model.BaseSource#getKind()
+	 */
+	@Override
+	public String getKind() {
+	    return "warning";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.ilaborie.pineneedles.web.model.BaseSource#getKindLabel()
+	 */
+	@Override
+	public String getKindLabel() {
+	    return "Folder";
+	}
 
 	/**
 	 * Checks if is recursive.

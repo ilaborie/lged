@@ -102,7 +102,7 @@ TODO / Ideas
 * use field for Chrome search
 
 * rest/search?q=
-* rest/search?q= + fq (on source, on shelve)
+* rest/search?q= + fq (on source, on shelve, field)
 * Faceting
 * paging
 * opening docs
@@ -114,18 +114,17 @@ TODO / Ideas
 
 ### Administration
 
-* Support add/Delete links
-* Better UI for link: [Site] lastSegment
-* Support all Tags with <nb>,
-* Add Thanks Javascript (initializr, boilerplate, bootstrap, background, ICanHaz, Mustache, less, Google)
-* Add Thanks image (background, Glyphicons)
+* Response Helper: BadRequest, Created, OK, source not found
+* Suffix all Entity
+* Better Error Message (Notice ?)
+* Support autocompletion for tag
 
+* Extract favicon from links
 * Handle exclude Pattern for Folder Sources
-* Handle Field info for links source textarea, folder
+* Handle Field info for links source textarea, folder, tags
 * Disable 'Update' btn if not changed
 
 * Tag Thesaurus
-
 
 ### About
 

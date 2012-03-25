@@ -22,6 +22,30 @@ public class LinksSource extends BaseSource {
 	public LinksSource() {
 		super();
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.ilaborie.pineneedles.web.model.BaseSource#getDetail()
+	 */
+	@Override
+	public String getDetail() {
+	    return this.getLinks();
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.ilaborie.pineneedles.web.model.BaseSource#getKind()
+	 */
+	@Override
+	public String getKind() {
+	    return "info";
+	}
+
+	/* (non-Javadoc)
+	 * @see org.ilaborie.pineneedles.web.model.BaseSource#getKindLabel()
+	 */
+	@Override
+	public String getKindLabel() {
+	    return "Links";
+	}
 
 	/**
 	 * Gets the links.

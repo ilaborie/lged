@@ -110,7 +110,7 @@ body {
 #shelf-form {
 	background-color: @colorShelf;
 	border-color: darken(@colorShelf,25%);
-	border-weight: medium;
+	border-width: medium;
 }
 #shelf-description {
 	height: @textareaHeight;
@@ -125,11 +125,16 @@ body {
 #source-form {
 	background-color: @colorSource;
 	border-color: darken(@colorSource,25%);	
-	border-weight: medium;
+	border-width: medium;
 }
 #source-description {
 	height: @textareaHeight;
 }
+
+#source-links-detail {
+	padding-bottom: 4px;
+}
+
 #source-links-create-detail {
 	textarea {
 		height: @textareaHeight;
@@ -137,7 +142,7 @@ body {
 }
 
 #btnAddLink {
-	margin-right: 4px;
+	margin-right: 17px;
 }
 #btnSaveSource {
 	margin-right: 4px;
@@ -147,6 +152,9 @@ body {
 	ul {
 		li {
 			margin : 4px;
+			a {
+				display: inline-block;
+			}
 		}
 	}
 }

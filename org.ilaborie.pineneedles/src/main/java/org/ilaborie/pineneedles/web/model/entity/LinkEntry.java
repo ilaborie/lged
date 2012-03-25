@@ -1,20 +1,24 @@
 package org.ilaborie.pineneedles.web.model.entity;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.google.common.base.Joiner;
+import org.ilaborie.pineneedles.web.util.Capitalize;
+
 import com.google.common.base.Splitter;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
@@ -33,10 +37,24 @@ public class LinkEntry {
 	/** The link. */
 	@XmlAttribute
 	private String link;
+	
+	/** The host. */
+	@XmlElement
+	private String host;
+	
+	/** The title. */
+	@XmlElement
+	private String title;
+	
+	/** The date. */
+	@XmlElement
+	@Temporal(TemporalType.DATE)
+	private Calendar date;
 
 	/** The tags. */
 	@XmlElement
 	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name="tag")
 	private Set<String> tags;
 
 	/**
@@ -44,30 +62,22 @@ public class LinkEntry {
 	 *
 	 * @return the display name
 	 */
-	public String getDisplayName() {
-		Iterable<String> split = Splitter.on("/").omitEmptyStrings().trimResults().split(this.link);
-		String site = Iterables.get(split, 1);
-		String page = Iterables.getLast(split);
-
+	public String getDisplayHost() {
 		// Handle site
-		List<String> sites = Lists.newArrayList(Splitter.on('.').split(site));
+		String site;
+		List<String> sites = Lists.newArrayList(Splitter.on('.').split(this.host));
 		switch (sites.size()) {
 			case 2:
-				site = sites.get(0);
+				site = Capitalize.FUNCTION.apply(sites.get(0));
 				break;
 			case 3:
-				site = sites.get(1);
+				site = Capitalize.FUNCTION.apply(sites.get(1));
 				break;
 			default:
+				site = this.host;
 				break;
 		}
-		
-		// Handle last segment
-		page = Joiner.on(' ').join(Splitter.on('-').split(page));
-		if (page.length()>1) {
-			page = page.substring(0, 1).toUpperCase() + page.substring(1).toLowerCase();
-		}
-		return String.format("[%1$s] %2$s", site, page);
+		return site;
 	}
 
 	/*
@@ -158,5 +168,59 @@ public class LinkEntry {
 	public void setTags(Set<String> tags) {
 		this.tags = tags;
 	}
+
+	/**
+	 * Gets the host.
+	 *
+	 * @return the host
+	 */
+	public String getHost() {
+    	return host;
+    }
+
+	/**
+	 * Sets the host.
+	 *
+	 * @param host the new host
+	 */
+	public void setHost(String host) {
+    	this.host = host;
+    }
+
+	/**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
+	public String getTitle() {
+    	return title;
+    }
+
+	/**
+	 * Sets the title.
+	 *
+	 * @param title the new title
+	 */
+	public void setTitle(String title) {
+    	this.title = title;
+    }
+
+	/**
+	 * Gets the date.
+	 *
+	 * @return the date
+	 */
+	public Calendar getDate() {
+    	return date;
+    }
+
+	/**
+	 * Sets the date.
+	 *
+	 * @param date the new date
+	 */
+	public void setDate(Calendar date) {
+    	this.date = date;
+    }
 
 }

@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * The Class BaseSource.
  */
 @XmlRootElement(name = "source")
-public class BaseSource {
+public abstract class BaseSource {
 	/** The id. */
 	@XmlID
 	@XmlAttribute
@@ -26,6 +26,27 @@ public class BaseSource {
 	/** The description. */
 	@XmlElement
 	private String description;
+	
+	/**
+	 * Gets the kind.
+	 *
+	 * @return the kind
+	 */
+	public abstract String getKind();
+	
+	/**
+	 * Gets the kind label.
+	 *
+	 * @return the kind label
+	 */
+	public abstract String getKindLabel();
+	
+	/**
+	 * Gets the detail.
+	 *
+	 * @return the detail
+	 */
+	public abstract String getDetail();
 
 	/**
 	 * Gets the id.

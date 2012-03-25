@@ -22,42 +22,74 @@
 
 	<script src="js/libs/modernizr-2.5.3-respond-1.1.0.min.js"></script>
 	<!--  Shelf -->
-	<script id="shelf" type="text/html">
-		<div id="shelf-{{id}}" class="span10 shelf offset1" style="display: none;">
-			<h2>{{name}}</h2>
-			<p>{{description}}</p>
-			<a id="btnShowShelf-{{id}}" class="btn showShelf" href="#">View details &raquo;</a>
-			<div class="pull-right"><a id="btnDelShelf-{{id}}" class="btn btn-danger delShelf" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
+	<script id="shelves" type="text/html">
+		<p><a href="#" id="btnAddShelf" class="btn btn-primary">Add a new Shelf</a></p>
+		<div class="row" style="display: none;" >
+			{{#shelves}}
+			<div id="shelf-{{id}}" class="span10 shelf offset1">
+				<h2>{{name}}</h2>
+				<p>{{description}}</p>
+				<a id="btnShowShelf-{{id}}" class="btn showShelf" href="#">View details &raquo;</a>
+				<div class="pull-right"><a id="btnDelShelf-{{id}}" class="btn btn-danger delShelf" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
+			</div>
+			{{/shelves}}
 		</div>
 	</script>
 	<!--  Source -->
-	<script id="source" type="text/html">
-		<div id="source-{{id}}" class="source">
-			<h2>{{name}}&nbsp;<span class="label label-{{kind}}">{{kindLabel}}</span></h2>
-			<div class="location">{{detail}}</div>
-			<p>{{description}}</p>
-			<a id="btnShowSource-{{id}}" class="btn showSource" href="#">View details &raquo;</a>
-			<div class="pull-right"><a id="btnDelSource-{{id}}" class="btn btn-danger delSource" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
-		</div>
-	</script>
-	<!--  Link -->
-	<script id="link" type="text/html">
-		<li id="link-{{id}}">
-			<a href="{{link}}" target="_blank">{{displayName}}</a>
-			&nbsp;
-			{{#tags}}
-			<span class="label label-inverse"><i class="icon-tag icon-white"></i>&nbsp;{{.}}</span>
-			{{/tags}}
-			<div class="pull-right">
-				<a id="btnDelLink-{{id}}" class="btn btn-danger btn-mini delEntry" href="#"><i class="icon-trash icon-white"></i></a>
+	<script id="sources" type="text/html">
+		<p>
+			<div class="btn-group">
+				<button id="btnAddSource" class="btn btn-primary">Add a new Source</button>
+				<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown"><span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a id="btnAddFolderSource" href="#">Folder Source</a></li>
+					<li><a id="btnAddLinksSource" href="#">Links Source</a></li>
+				</ul>
 			</div>
-		</li>
+		</p>
+		<div id="sources" class="row" style="display:none;">
+			{{#sources}}
+			<div id="source-{{id}}" class="source">
+				<h2>{{name}}&nbsp;<span class="label label-{{kind}}">{{kindLabel}}</span></h2>
+				<div class="location">{{detail}}</div>
+				<p>{{description}}</p>
+				<a id="btnShowSource-{{id}}" class="btn showSource" href="#">View details &raquo;</a>
+				<div class="pull-right"><a id="btnDelSource-{{id}}" class="btn btn-danger delSource" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
+			</div>
+			{{/sources}}
+		</div> 
 	</script>
-	<script id="doc" type="text/html">
-		<div id="doc-{{id}}" class="span10 offset1 result">
-			<h3><a href="{{link}}">{{title}}</a></h3>
-			<div class="location">{{location}}</div>
-			<div class="teaser">{{teaser}}</div>					
+	<!--  Links -->
+	<script id="links" type="text/html">
+		<ul class="nav nav-list">
+			{{#hosts}}
+			<li class="nav-header">{{host}}</li>
+				{{#links}}		
+				<li id="link-{{id}}">
+					<a href="{{link}}" target="_blank">{{title}}</a>&nbsp;
+					{{#tags}}
+					<span class="label label-inverse"><i class="icon-tag icon-white"></i>&nbsp;{{.}}</span>
+					{{/tags}}
+					<div class="pull-right">
+						<a id="btnEditLink-{{id}}" class="btn btn-success btn-mini editEntry" href="#"><i class="icon-pencil icon-white"></i></a>
+						<a id="btnDelLink-{{id}}" class="btn btn-danger btn-mini delEntry" href="#"><i class="icon-trash icon-white"></i></a>
+					</div>
+				</li>
+				{{/links}}
+			{{/hosts}}
+		</ul>
+	</script>
+	<!-- Search Result -->
+	<script id="docs" type="text/html">
+		<div id="search-result-info" class="span12">Found {{results}} documents in {{time}}ms</div>
+		<div class="row">
+			{{#docs}}
+			<div id="doc-{{id}}" class="span10 offset1 result">
+				<h3><a href="{{link}}">{{title}}</a></h3>
+				<div class="location">{{location}}</div>
+				<div class="teaser">{{teaser}}</div>					
+			</div>
+			{{/docs}}
 		</div>
 	</script>
 	<script id="notify" type="text/html">
@@ -102,10 +134,7 @@
 			</form>
 		</div>
 		<div id="search-result" class="hidden">
-			<div id="search-result-info" class="span12"></div>
-			<div class="row">
 				<!-- Fill by Javascript -->
-			</div>
 		</div>
 	</div>
 	
@@ -130,10 +159,7 @@
 		
 		<!-- Shelve list -->
 		<div id="shelves">
-			<p><a href="#" id="btnAddShelf" class="btn btn-primary">Add a new Shelf</a></p>
-			<div class="row" >
-				<!-- Fill by Javascript -->
-			</div>
+			<!-- Fill by Javascript -->
 		</div>
 		
 		<!-- Create a new Shelf -->
@@ -157,36 +183,21 @@
 		<!-- Shelf detail -->
 		<div id="shelfDetail" class="hidden">
 			<p><a href="#" id="btnBackShelves" class="btn">&laquo; Back to Shelves</a></p>
-			<div class="row">
-				<form id="shelf-form" class="well span10 offset1">
+			<div class="row" class="offset1">
+				<form id="shelf-form" class="well offset1">
 					<input type="hidden" name="shelf-update-id" id="shelf-update-id" value=""/>
 					<label for="shelf-name" class="mandatory">Name</label>
 					<input type="text" value="" title="Name" name="name" id="shelf-name" required="required" placeholder="Shelf name" class="span5"/>
 					<label for="shelf-description" >Description</label>
- 					<textarea title="Description" name="description" id="shelf-description" class="span9" placeholder="Shelf description...">
+						<textarea title="Description" name="description" id="shelf-description" class="span9" placeholder="Shelf description...">
 					</textarea>
 					<div class="pull-right">
 						<a id="btnSaveShelf" class="btn btn-primary" href="#">Update</a>
 					</div>
 				</form>
-				<div class="span10 offset1">
-					<hr />
-					<p>
-						<div class="btn-group">
-  							<button id="btnAddSource" class="btn btn-primary">Add a new Source</button>
-  							<button class="btn dropdown-toggle btn-primary" data-toggle="dropdown">
-    							<span class="caret"></span>
-  							</button>
-  							<ul class="dropdown-menu">
-  								<li><a id="btnAddFolderSource" href="#">Folder Source</a></li>
-  								<li><a id="btnAddLinksSource" href="#">Links Source</a></li>
-  							</ul>
-						</div>
-					</p>
-				</div>
-				<div id="sources" class="span10 offset1">
-					<!-- Fill by Javascript -->
-				</div> 
+			</div>
+			<div id="shelf-sources" class="offset1">
+				<!-- Fill by Javascript -->
 			</div>
 		</div>
 		
@@ -235,14 +246,15 @@
 		<!-- Source detail -->
 		<div id="sourceDetail" class="hidden">
 			<p><a href="#" id="btnBackShelf" class="btn">&laquo; Back to Shelf</a></p>
-			<div class="row">
-				<form id="source-form" class="well span10 offset1">
+			<div class="row" class="offset1">
+				<form id="source-form" class="well offset1">
 					<input type="hidden" name="source-id" id="source-id" value=""/>
 					<label for="source-name" class="mandatory">Name</label>
 					<input type="text" value="" title="Name" name="name" id="source-name" required="required" placeholder="Source name" class="span5"/>
 					<label for="source-description" >Description</label>
  					<textarea title="Description" name="description" id="source-description" class="span9" placeholder="Source description...">
 					</textarea>
+					<div class="pull-right"><a id="btnSaveSource" class="btn btn-primary" href="#"></a></div>
 					<hr />
 					<div id="source-folder-detail" class="hidden">
 						<!-- Special Folder source -->
@@ -255,27 +267,78 @@
 						<!-- TODO includes, excludes -->
 					</div>
 					<div id="source-links-detail" class="hidden">
-						<label for="source-links" class="mandatory">Links</label>
 						<div class="pull-right" >
 							<a id="btnAddLink" class="btn btn-success btn-mini" href="#"><i class="icon-plus icon-white"></i></a>
 						</div>
-						<br/>
 						<div id="source-links-all">
 							<!-- Fill by Javascript -->
 						</div>
 					</div>
-					<div class="pull-right"><a id="btnSaveSource" class="btn btn-primary" href="#"></a></div>
 				</div>
+			</div>
+		</div>
+		
+		<!-- Create a new Link -->
+		<div id="diaNewLink" class="modal fade">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a>
+				<h3>Create a new Link</h3>
+			</div>
+			<div class="modal-body max-height">
+				<label for="source-create-link" class="mandatory">Link</label>
+				<input type="text" value="" title="Link" name="source-create-link" id="source-create-link" required="required" placeholder="Link..."/>
+				
+				<label for="source-create-link-tags">Tags</label>
+ 				<textarea title="Tags" name="source-create-link-tags" id="source-create-link-tags" placeholder="JavaEE, Test, EJB, ...">
+				</textarea>
+			</div>
+			<div class="modal-footer">
+				<a id="btnCreateLink" href="#" class="btn btn-primary">Create</a>
+				<a href="#" class="btn" data-dismiss="modal">Close</a>
+			</div>
+		</div>
+		<!-- Update a  Link -->
+		<div id="diaUpdateLink" class="modal fade">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">×</a>
+				<h3>Update Link</h3>
+			</div>
+			<div class="modal-body max-height">
+				<input type="hidden" value="" name="source-update-link-id" id="source-update-link-id"/>
+				<label for="source-update-link" class="mandatory">Link</label>
+				<input type="text" value="" title="Link" name="source-update-link" id="source-update-link" required="required" placeholder="Link..." disabled="disabled"/>
+				
+				<label for="source-update-link-tags">Tags</label>
+ 				<textarea title="Tags" name="source-update-link-tags" id="source-update-link-tags" placeholder="JavaEE, Test, EJB, ...">
+				</textarea>
+			</div>
+			<div class="modal-footer">
+				<a id="btnSaveLink" href="#" class="btn btn-primary">Update</a>
+				<a href="#" class="btn" data-dismiss="modal">Close</a>
 			</div>
 		</div>
 	</div>
 	
 	<!-- About Page -->
-	<div id="about-content" class="content hidden">
-		<div class="hero-unit">
-			<h1>About LocalGED</h1>
-			<p>This application provide an easy way to search term into a local GED</p>
-			<p><a href="mailto:ilaborie@gmail.com" class="btn btn-primary">Feedback &raquo;</a></p>
+	<div id="about-content" class="container content hidden">
+		<div class="row">
+			<div class="hero-unit span12">
+				<h1>About LocalGED</h1>
+				<p>This application provide an easy way to search term into a local GED</p>
+				<p><a href="mailto:ilaborie@gmail.com" class="btn btn-primary"><i class="icon-envelope icon-white"></i> Feedback</a></p>
+			</div>
+			<div class="span6">
+				<h2>Thanks to</h2>
+				<ul class="nav nav-list">
+					<li><a href="http://www.initializr.com/" target="_blank">Initializr</a></li>
+					<li><a href="http://twitter.github.com/bootstrap/" target="_blank">Bootstrap, from Twitter</a></li>
+					<li><a href="http://html5boilerplate.com/" target="_blank">HTML5 Boilerplate</a></li>
+					<li><a href="http://lesscss.org/" target="_blank">Less</a></li>
+					<li><a href="http://mustache.github.com/" target="_blank">Mustache</a></li>
+					<li><a href="http://icanhazjs.com/" target="_blank">ICanHaz</a></li>
+					<li><a href="http://glyphicons.com/" target="_blank">Glyphicons</a></li>
+				</ul>
+			</div>
 		</div>
 	</div>
 	
