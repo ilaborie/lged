@@ -18,11 +18,18 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import org.ilaborie.pineneedles.web.model.BaseSource;
+import org.ilaborie.pineneedles.web.model.FolderSource;
+import org.ilaborie.pineneedles.web.model.LinksSource;
 import org.ilaborie.pineneedles.web.model.Message;
 import org.ilaborie.pineneedles.web.model.entity.Shelf;
 import org.ilaborie.pineneedles.web.model.entity.Source;
+import org.ilaborie.pineneedles.web.model.entity.SourceFolder;
+import org.ilaborie.pineneedles.web.model.entity.SourceLinks;
 import org.slf4j.Logger;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
@@ -34,6 +41,76 @@ import com.google.common.collect.Lists;
 @Stateless
 public class Sources {
 
+	/**
+	 * The Class EntityToPojo.
+	 */
+	private final class EntityToPojo implements Function<Source, BaseSource> {
+
+		/**
+		 * Apply.
+		 *
+		 * @param input the input
+		 * @return the base source
+		 */
+		@Override
+		public BaseSource apply(Source input) {
+			BaseSource result = null;
+			if (input instanceof SourceFolder) {
+				result = this.transform((SourceFolder) input);
+			} else if (input instanceof SourceLinks) {
+				result = this.transform((SourceLinks) input);
+			}
+			return result;
+		}
+
+		/**
+		 * Transform.
+		 *
+		 * @param input the input
+		 * @return the base source
+		 */
+		private BaseSource transform(SourceFolder input) {
+			FolderSource result = new FolderSource();
+			result.setId(input.getId());
+			result.setName(input.getName());
+			result.setDescription(input.getDescription());
+			result.setPath(input.getFolder());
+			result.setShelfId(input.getShelf().getId());
+			return result;
+		}
+
+		/**
+		 * Transform.
+		 *
+		 * @param input the input
+		 * @return the base source
+		 */
+		private BaseSource transform(SourceLinks input) {
+			LinksSource result = new LinksSource();
+			result.setId(input.getId());
+			result.setName(input.getName());
+			result.setDescription(input.getDescription());
+
+			int size = input.getLinks().size();
+			String lnk;
+			switch (size) {
+				case 0:
+					lnk = "No link !";
+					break;
+				case 1:
+					lnk = input.getLinks().iterator().next().getLink();
+					break;
+				default:
+					lnk = String.format("%1$d link(s)", size);
+					break;
+			}
+
+			result.setLinks(lnk);
+			result.setShelfId(input.getShelf().getId());
+			return result;
+		}
+	}
+
 	/** The URI info. */
 	@Context
 	private UriInfo uriInfo;
@@ -42,24 +119,29 @@ public class Sources {
 	@Inject
 	private EntityManager em;
 
+	/** The logger. */
 	@Inject
 	private Logger logger;
 
 	/**
 	 * Find all.
 	 *
+	 * @param shelfId the shelf id
 	 * @return the list
 	 */
 	@GET
 	@Path("shelf/{id}")
-	public List<Source> findByShelf(@PathParam("id") String shelfId) {
+	public List<BaseSource> findByShelf(@PathParam("id") String shelfId) {
 		logger.info("Sources#findByShelf() : {}", this.uriInfo.getAbsolutePath());
 
 		TypedQuery<Source> query = this.em.createNamedQuery(Source.QUERY_FIND_BY_SHELF, Source.class);
 		Shelf shelf = this.em.find(Shelf.class, shelfId);
 		query.setParameter("shelf", shelf);
 
-		return Lists.newArrayList(query.getResultList());
+		List<Source> entities = query.getResultList();
+
+		Function<Source, BaseSource> function = new EntityToPojo();
+		return Lists.newArrayList(Iterables.transform(entities, function));
 	}
 
 	/**
@@ -74,7 +156,7 @@ public class Sources {
 		logger.info("Sources#FindById() : {}", this.uriInfo.getAbsolutePath());
 
 		Source source = this.em.find(Source.class, id);
-
+		
 		Response response;
 		if (source == null) {
 			response = Response.status(Status.NO_CONTENT).build();

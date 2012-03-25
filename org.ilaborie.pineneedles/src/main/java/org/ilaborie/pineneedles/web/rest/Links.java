@@ -1,6 +1,6 @@
 package org.ilaborie.pineneedles.web.rest;
 
-import java.io.File;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
@@ -16,22 +16,26 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.ilaborie.pineneedles.web.model.FolderSource;
+import org.ilaborie.pineneedles.web.model.LinksSource;
 import org.ilaborie.pineneedles.web.model.Message;
+import org.ilaborie.pineneedles.web.model.entity.LinkEntry;
 import org.ilaborie.pineneedles.web.model.entity.Shelf;
-import org.ilaborie.pineneedles.web.model.entity.SourceFolder;
+import org.ilaborie.pineneedles.web.model.entity.SourceLinks;
 import org.slf4j.Logger;
 
+import com.google.common.base.CharMatcher;
+import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 
 /**
  * The Class ShelfResource.
  */
-@Path("folders")
+@Path("links")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Stateless
-public class Folders {
+public class Links {
 
 	/** The URI info. */
 	@Context
@@ -52,15 +56,14 @@ public class Folders {
 	 * @return the shelf
 	 */
 	@PUT
-	public Response createOrUpdate(FolderSource folder) {
-		logger.info("Folders#createOrUpdate() : {}", this.uriInfo.getAbsolutePath());
+	public Response createOrUpdate(LinksSource source) {
+		logger.info("Links#createOrUpdate() : {}", this.uriInfo.getAbsolutePath());
 
-		String id = folder.getId();
-		String shelfId = folder.getShelfId();
-		String name = folder.getName();
-		String description = folder.getDescription();
-		String path = folder.getPath();
-		boolean recursive = folder.isRecursive();
+		String id = source.getId();
+		String shelfId = source.getShelfId();
+		String name = source.getName();
+		String description = source.getDescription();
+		String links = source.getLinks();
 
 		if (Strings.isNullOrEmpty(name)) {
 			return Response
@@ -68,28 +71,21 @@ public class Folders {
 			        .entity(new Message("'name' parameter must not be null"))
 			        .build();
 		}
-		if (Strings.isNullOrEmpty(path)) {
+		if (Strings.isNullOrEmpty(links)) {
 			return Response
 			        .status(Response.Status.BAD_REQUEST)
-			        .entity(new Message("'path' parameter must not be null"))
-			        .build();
-		}
-		File file = new File(path);
-		if (!file.exists() || !file.isDirectory()) {
-			return Response
-			        .status(Response.Status.BAD_REQUEST)
-			        .entity(new Message("Folder does not exists: " + file))
+			        .entity(new Message("'links' parameter must not be null"))
 			        .build();
 		}
 
 		// Clean fields
-		SourceFolder entity = new SourceFolder();
+		SourceLinks entity = new SourceLinks();
 		entity.setName(name.trim());
 		if (description != null) {
 			entity.setDescription(Strings.nullToEmpty(description.trim()));
 		}
-		entity.setRecursive(recursive);
-		entity.setFolder(file.getAbsolutePath());
+		// handle links
+		entity.setLinks(this.createLinks(links));
 
 		try {
 			Shelf shelf = this.em.find(Shelf.class, shelfId);
@@ -117,6 +113,41 @@ public class Folders {
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
 		}
+	}
+
+	/**
+	 * Creates the links.
+	 *
+	 * @param links the links
+	 * @return the list
+	 */
+	private Set<LinkEntry> createLinks(String links) {
+		Set<LinkEntry> result = Sets.newHashSet();
+
+		Splitter tagsSplitter = Splitter.on(',').omitEmptyStrings().trimResults();
+
+		Set<String> tags = Sets.newHashSet();
+		LinkEntry entry;
+
+		Iterable<String> lines = Splitter.on(CharMatcher.anyOf("\n\r\f")).split(links);
+		for (String line : lines) {
+			if (Strings.isNullOrEmpty(line.trim())) {
+				// Separator line
+				tags = Sets.newHashSet();
+			} else if (line.startsWith("http:") || line.startsWith("https:")) {
+				// an entry
+				entry = new LinkEntry();
+				entry.setLink(line.trim());
+				entry.setTags(tags);
+				entry.setId(this.createId());
+				result.add(entry);
+			} else {
+				// Handle tag
+				tags = Sets.newHashSet(tagsSplitter.split(line));
+			}
+		}
+
+		return result;
 	}
 
 	/**

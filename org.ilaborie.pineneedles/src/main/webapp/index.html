@@ -21,7 +21,7 @@
 	<link type="text/css" rel="stylesheet" href="style/style.css">
 
 	<script src="js/libs/modernizr-2.5.3-respond-1.1.0.min.js"></script>
-	<!--  Shelf Template -->
+	<!--  Shelf -->
 	<script id="shelf" type="text/html">
 		<div id="shelf-{{id}}" class="span10 shelf offset1" style="display: none;">
 			<h2>{{name}}</h2>
@@ -30,7 +30,7 @@
 			<div class="pull-right"><a id="btnDelShelf-{{id}}" class="btn btn-danger delShelf" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
 		</div>
 	</script>
-	<!--  Source Template -->
+	<!--  Source -->
 	<script id="source" type="text/html">
 		<div id="source-{{id}}" class="source">
 			<h2>{{name}}&nbsp;<span class="label label-{{kind}}">{{kindLabel}}</span></h2>
@@ -40,9 +40,22 @@
 			<div class="pull-right"><a id="btnDelSource-{{id}}" class="btn btn-danger delSource" href="#"><i class="icon-trash icon-white"></i>&nbsp;Delete</a></div>
 		</div>
 	</script>
+	<!--  Link -->
+	<script id="link" type="text/html">
+		<li id="link-{{id}}">
+			<a href="{{link}}" target="_blank">{{displayName}}</a>
+			&nbsp;
+			{{#tags}}
+			<span class="label label-inverse"><i class="icon-tag icon-white"></i>&nbsp;{{.}}</span>
+			{{/tags}}
+			<div class="pull-right">
+				<a id="btnDelLink-{{id}}" class="btn btn-danger btn-mini delEntry" href="#"><i class="icon-trash icon-white"></i></a>
+			</div>
+		</li>
+	</script>
 	<script id="doc" type="text/html">
 		<div id="doc-{{id}}" class="span10 offset1 result">
-			<h3><a href="{{link}}">{{}}</a></h3>
+			<h3><a href="{{link}}">{{title}}</a></h3>
 			<div class="location">{{location}}</div>
 			<div class="teaser">{{teaser}}</div>					
 		</div>
@@ -88,28 +101,17 @@
 				<button type="submit" id="btnSearch" class="btn btn-primary" style="margin-left :-16px;vertical-align: top;"><i class="icon-search icon-white"></i></button>
 			</form>
 		</div>
-		<div id="search-result" class=hidden">
-			<div id="search-result-info" class="span12">Environ 25 270 000 000 résultats (0,22 secondes)</div>
+		<div id="search-result" class="hidden">
+			<div id="search-result-info" class="span12"></div>
 			<div class="row">
-				<div id="doc-1" class="span10 offset1 result">
-					<h3><a href="">Document 1</a></h3>
-					<div class="location">/Users/laborie/Document/plop.pdf</div>
-					<div class="teaser">An HTML5 Logo. It stands strong and true, resilient and universal as the markup you write. It shines as bright and as bold as the forward-thinking, dedicated web developers you are.</div>					
-				</div>
-				<div id="doc-2" class="span10 offset1 result">
-					<h3><a href="">Document 2</a></h3>
-					<div class="location">/Users/laborie/Document/plop2.pdf</div>
-					<div class="teaser">An HTML5 Logo. It stands strong and true, resilient and universal as the markup you write. It shines as bright and as bold as the forward-thinking, dedicated web developers you are.</div>					
-				</div>
+				<!-- Fill by Javascript -->
 			</div>
 		</div>
 	</div>
 	
 	<!-- Admin Page -->
 	<div id="admin-content" class="content hidden">
-		<div class="page-header well">
-  			<h1>Administration <small>Manage Shelves and Sources</small></h1>
-		</div>
+		<!-- Breadcrumb -->
 		<ul id="breadcrumb-shelves" class="breadcrumb">
 			<li class="active">Shelves</li>
 		</ul>
@@ -214,7 +216,6 @@
 				<div id="source-folders-create-detail" class="hidden">
 					<label for="source-create-folder" class="mandatory">Folder</label>
 					<input type="text" title="Folder" value="" name="source-create-folder" id="source-create-folder" required="required" placeholder="Folder to index" />
-				
 					<br/>
 					<label for="source-create-recursif" class="checkbox" >
 						<input type="checkbox" title="Recursif" name="source-create-recursif" id="source-create-recursif" /> Recursive
@@ -253,10 +254,15 @@
 						</label>
 						<!-- TODO includes, excludes -->
 					</div>
-					<div id="source-folder-detail" class="hidden">
+					<div id="source-links-detail" class="hidden">
 						<label for="source-links" class="mandatory">Links</label>
-		 				<textarea title="Links" name="source-links" id="source-links" required="required" placeholder="Links...">
-						</textarea>
+						<div class="pull-right" >
+							<a id="btnAddLink" class="btn btn-success btn-mini" href="#"><i class="icon-plus icon-white"></i></a>
+						</div>
+						<br/>
+						<div id="source-links-all">
+							<!-- Fill by Javascript -->
+						</div>
 					</div>
 					<div class="pull-right"><a id="btnSaveSource" class="btn btn-primary" href="#"></a></div>
 				</div>

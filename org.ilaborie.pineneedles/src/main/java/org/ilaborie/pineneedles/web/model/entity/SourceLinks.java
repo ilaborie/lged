@@ -1,8 +1,10 @@
 package org.ilaborie.pineneedles.web.model.entity;
 
-import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -14,15 +16,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SourceLinks extends Source {
 
 	/** The links. */
-	@OneToMany
-	private List<LinkEntry> links;
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	private Set<LinkEntry> links;
 
 	/**
 	 * Gets the links.
 	 *
 	 * @return the links
 	 */
-	public List<LinkEntry> getLinks() {
+	public Set<LinkEntry> getLinks() {
 		return links;
 	}
 
@@ -31,7 +33,7 @@ public class SourceLinks extends Source {
 	 *
 	 * @param links the new links
 	 */
-	public void setLinks(List<LinkEntry> links) {
+	public void setLinks(Set<LinkEntry> links) {
 		this.links = links;
 	}
 

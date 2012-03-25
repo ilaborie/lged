@@ -20,13 +20,19 @@ REST API
 
 #### Basic Search
 
+	curl -XGET http://localhost:8080/org.ilaborie.pineneedles/rest/search?q=<query>
+
 #### Advanced Search
 
 ### Indexing
 
 #### Clear index
 
+	curl -XGET http://localhost:8080/org.ilaborie.pineneedles/rest/index/clear
+
 #### Synchronize index
+
+	curl -XGET http://localhost:8080/org.ilaborie.pineneedles/rest/index/synchronize
 
 ### Administration
 #### Shelves
@@ -35,7 +41,7 @@ On <http://localhost:8080/org.ilaborie.pineneedles/rest/shelves>
 
 ##### Create/Update a Shelf
 
-	 curl -XPUT -H "Content-Type: application/json" http://localhost:8080/org.ilaborie.pineneedles/rest/shelves --data-binary '{"name":"aze","description":"arf"}'
+	 curl -XPUT -H "Content-Type: application/json" h--data-binary '{"name":"aze","description":"arf"}'
 	 
 Should return the created/updated shelf
 
@@ -74,11 +80,11 @@ Update links on <http://localhost:8080/org.ilaborie.pineneedles/rest/links>
 	
 ##### Create/Update folder source
 
-	curl -XPUT http://localhost:8080/org.ilaborie.pineneedles/rest/folders/ -d '{ "name":"plop","description":"desc","path":"/Users/plop/Documents","recursive":true}'
+	curl -XPUT -H "Content-Type: application/json" http://localhost:8080/org.ilaborie.pineneedles/rest/folders/ -d '{ "name":"plop","description":"desc","path":"/Users/plop/Documents","recursive":true}'
 	
 ##### Create/Update link source
 
-	curl -XPUT http://localhost:8080/org.ilaborie.pineneedles/rest/links/ -d '{ "name":"plop","description":"desc","links":"…"}'
+	curl -XPUT -H "Content-Type: application/json" http://localhost:8080/org.ilaborie.pineneedles/rest/links/ -d '{ "name":"plop","description":"desc","links":"…"}'
 	
 TODO / Ideas
 ------------
@@ -97,8 +103,9 @@ TODO / Ideas
 
 * rest/search?q=
 * rest/search?q= + fq (on source, on shelve)
+* Faceting
 * paging
-* opening
+* opening docs
 
 ### Index
 
@@ -107,19 +114,27 @@ TODO / Ideas
 
 ### Administration
 
-* Support Links Source
+* Support add/Delete links
+* Better UI for link: [Site] lastSegment
+* Support all Tags with <nb>,
+* Add Thanks Javascript (initializr, boilerplate, bootstrap, background, ICanHaz, Mustache, less, Google)
+* Add Thanks image (background, Glyphicons)
 
 * Handle exclude Pattern for Folder Sources
 * Handle Field info for links source textarea, folder
 * Disable 'Update' btn if not changed
 
+* Tag Thesaurus
+
+
 ### About
 
-* Shiny HTML5 Canvas animation (pine cone fall, + rotating)
+* Shiny HTML5 animation (pine cone fall, + rotating)
 
 ### Possible Background
 
 * Search with brown color (like wooden texture) (Texture dusty wood)
+<http://tzolkin.deviantart.com/art/Texture-Dusty-Wood-70928532?q=boost%3Apopular%20wood%20texture&qo=9>
 
 <https://secure.flickr.com/photos/24557420@N05/3975359536/sizes/o/in/photostream/>
 <https://secure.flickr.com/photos/nouspique/4633864261/sizes/o/in/photostream/>

@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,6 +23,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.ilaborie.pineneedles.web.model.Message;
 import org.ilaborie.pineneedles.web.model.entity.Shelf;
+import org.ilaborie.pineneedles.web.model.entity.Source;
 import org.slf4j.Logger;
 
 import com.google.common.base.Strings;
@@ -98,7 +100,13 @@ public class Shelves {
 				return Response.status(Status.BAD_REQUEST)
 				        .entity( new Message("Could not find the shelf: " + id)).build();
 			}
+			
+			// Delete all sources
+			Query query = this.em.createNamedQuery(Source.QUERY_DELETE_BY_SHELF);
+			query.setParameter("shelf", entity);
+			query.executeUpdate();
 
+			// Delete shelf
 			this.em.remove(entity);
 			return Response.ok( new Message("Shelf deleted: " + id)).build();
 		} catch (Exception e) {

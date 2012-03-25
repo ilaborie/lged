@@ -6,11 +6,10 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * The Class Folder.
+ * The Class BaseSource.
  */
-@XmlRootElement(name="folder")
-public class Folder {
-
+@XmlRootElement(name = "source")
+public class BaseSource {
 	/** The id. */
 	@XmlID
 	@XmlAttribute
@@ -28,26 +27,6 @@ public class Folder {
 	@XmlElement
 	private String description;
 
-	/** The recursive. */
-	@XmlElement
-	private boolean recursive;
-
-	/** The path. */
-	@XmlElement
-	private String path;
-	
-	/**
-	 * Instantiates a new folder.
-	 */
-	public Folder() {
-		super();
-    }
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.ilaborie.pineneedles.web.model.ISource#getId()
-	 */
 	/**
 	 * Gets the id.
 	 *
@@ -84,11 +63,6 @@ public class Folder {
 		this.shelfId = shelfId;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.ilaborie.pineneedles.web.model.ISource#getName()
-	 */
 	/**
 	 * Gets the name.
 	 *
@@ -107,11 +81,6 @@ public class Folder {
 		this.name = name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.ilaborie.pineneedles.web.model.ISource#getDescription()
-	 */
 	/**
 	 * Gets the description.
 	 *
@@ -128,42 +97,6 @@ public class Folder {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	/**
-	 * Checks if is recursive.
-	 *
-	 * @return true, if is recursive
-	 */
-	public boolean isRecursive() {
-		return recursive;
-	}
-
-	/**
-	 * Sets the recursive.
-	 *
-	 * @param recursive the new recursive
-	 */
-	public void setRecursive(boolean recursive) {
-		this.recursive = recursive;
-	}
-
-	/**
-	 * Gets the path.
-	 *
-	 * @return the path
-	 */
-	public String getPath() {
-		return path;
-	}
-
-	/**
-	 * Sets the path.
-	 *
-	 * @param path the new path
-	 */
-	public void setPath(String path) {
-		this.path = path;
 	}
 
 }

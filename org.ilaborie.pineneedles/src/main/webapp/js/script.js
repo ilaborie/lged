@@ -1,53 +1,54 @@
 /* Author: Igor Laborie <ilaborie@gmail.com>
-	TODO @see http://blog.ippon.fr/2012/02/20/mustache-js-et-icanhaz-js-au-secours-de-jquery/
  */
 var LocalGed = {
-	currentPage : 'search', 				// Between 'search', 'admin', ‘about‘
-	shelf : null,							// Current shelf
-	source : null,							// Current source
-	confirm: null,							// Confirm function
-	debug : true							// Debug mode
+	currentPage : 'search', // Between 'search', 'admin', ‘about‘
+	shelf : null, // Current shelf
+	source : null, // Current source
+	confirm : null, // Confirm function
+	debug : true
+// Debug mode
 };
 
 // Do when page is loading
 $(document).ready(function() {
 	// Add a startsWith function on String
 	if (typeof String.prototype.startsWith != 'function') {
-			String.prototype.startsWith = function (str){
-				return this.indexOf(str) == 0;
-			};
-		}
-	
+		String.prototype.startsWith = function(str) {
+			return this.indexOf(str) == 0;
+		};
+	}
+
 	// Define Menu Action
 	$("#search").click(LocalGed.showSearch);
 	$("#admin").click(LocalGed.showAdmin);
 	$("#about").click(LocalGed.showAbout);
-	
+
 	// Search
 	$("#btnSearch").click(LocalGed.doSearch);
 	$("#q").keypress(LocalGed.handleSearch);
-	
+	$("#search-input form").submit(LocalGed.doSearch);
+
 	// Shelves Administration
 	$("#btnAddShelf").click(LocalGed.addShelf);
 	$("#btnBackShelves").click(LocalGed.backShelves);
 
 	$("#btnSaveShelf").click(LocalGed.saveShelf);
 	$("#btnCreateShelf").click(LocalGed.createShelf);
-	
+
 	$("#shelf-create-name").keypress(LocalGed.handleCreateShelf);
 	$("#shelf-name").keypress(LocalGed.handleUpdateShelf);
-	$("#diaNewShelf").on('shown', function() { 
-		$("#shelf-create-name").focus(); 
+	$("#diaNewShelf").on('shown', function() {
+		$("#shelf-create-name").focus();
 	});
-	
+
 	// Sources Administration
 	$("#btnBackShelf").click(LocalGed.backShelf);
-	
+
 	$("#btnAddSource").click(LocalGed.addSource);
 	$("#btnAddFolderSource").click(LocalGed.addFolders);
 	$("#btnAddLinksSource").click(LocalGed.addLinks);
 	$("#source-create-type").change(LocalGed.changeSource)
-	
+
 	$("#source-create-name").keypress(LocalGed.handleCreateSource);
 	$("#source-create-folder").keypress(LocalGed.handleCreateSource);
 	$("#source-create-links").keypress(LocalGed.handleCreateSource);
@@ -55,50 +56,52 @@ $(document).ready(function() {
 	$("#source-name").keypress(LocalGed.handleSaveSource);
 	$("#source-folder-field").keypress(LocalGed.handleSaveSource);
 	$("#source-links").keypress(LocalGed.handleSaveSource);
-	
+
 	$("#btnCreateSource").click(LocalGed.createSource);
 	$("#btnSaveSource").click(LocalGed.saveSource);
-	
+
 	$("#diaNewSource").on('shown', function() {
-		$("#source-create-name").focus(); 
+		$("#source-create-name").focus();
 	});
-	
+
 	// Breadcrumb
 	$(".returnToShelves").click(LocalGed.backShelves);
 	$(".returnToShelf").click(LocalGed.backShelf);
-	
+
 	// Utilities
-	$("#diaConfirm").on('shown', function() { 
-		$("#btnConfirm").focus(); 
+	$("#diaConfirm").on('shown', function() {
+		$("#btnConfirm").focus();
 	});
-	$("#btnConfirm").click(function(){
+	$("#btnConfirm").click(function() {
 		$("#diaConfirm").modal('hide');
 		if (LocalGed.confirm) {
 			LocalGed.confirm();
 		}
 	});
-	
+
 	// Initial State
 	LocalGed.showSearch();
 	$("#q").focus();
 });
 
-//Handle Menu
+// Handle Menu
 /**
-* Switch to a page
-* @param page the page
-*/
+ * Switch to a page
+ * 
+ * @param page
+ *            the page
+ */
 LocalGed.switchPage = function(page) {
 	// Switch Menu
-	$("#" + this.currentPage).parent().removeClass("active"); 
+	$("#" + this.currentPage).parent().removeClass("active");
 	this.currentPage = page;
 	$("#" + this.currentPage).parent().addClass("active");
-	
+
 	// Switch content
-	$(".content").each(function () {
+	$(".content").each(function() {
 		var elt = $(this);
 		var id = elt.attr('id');
-		if (id  && id.startsWith(page)) {
+		if (id && id.startsWith(page)) {
 			elt.removeClass("hidden");
 		} else {
 			elt.addClass("hidden");
@@ -106,23 +109,23 @@ LocalGed.switchPage = function(page) {
 	});
 };
 /**
-* Show Search Page
-*/
-LocalGed.showSearch = function () {
+ * Show Search Page
+ */
+LocalGed.showSearch = function() {
 	LocalGed.switchPage('search');
 	$("#q").focus();
 };
 /**
-* Show Admin Page
-*/
-LocalGed.showAdmin = function () {
+ * Show Admin Page
+ */
+LocalGed.showAdmin = function() {
 	LocalGed.switchPage('admin');
 	LocalGed.loadShelves();
 };
 /**
-* Show About Page
-*/
-LocalGed.showAbout = function () {
+ * Show About Page
+ */
+LocalGed.showAbout = function() {
 	LocalGed.switchPage('about');
 };
 
@@ -131,44 +134,66 @@ LocalGed.showAbout = function () {
  * Handle KeyPres on Search input
  */
 LocalGed.handleSearch = function(e) {
-	LocalGed.doOnEnter(e,LocalGed.doSearch);
+	LocalGed.doOnEnter(e, LocalGed.doSearch);
 };
 /**
  * Launch search
  */
-LocalGed.doSearch = function() {
+LocalGed.doSearch = function(event) {
 	var query = $("#q").val();
+	$("#search-result").addClass("hidden");
 	
-	// TODO rest get search/{query}
+	// rest get search/{query}
+	var search = new RestServiceJs("rest/search?q=" + query);
+	search.findAll(function(json) {
+		$("#search-result").removeClass("hidden");
+		
+		var msg = "Found " + json.results + " documents in " + json.time + "ms";
+		$("#search-result-info").html(msg);
+		
+		// Display result
+		$("#shelves .row").empty();
+		$.each(json.docs, function(index, s) {
+			var id = s.id;
+			
+			var html = ich.doc(s);
+			$("#search-result .row").append(html);
 
-	$("#search-result").removeClass("hidden");
-	// TODO handle search
-	// $("#search-result-info").text(result.info);
-	// TODO result;
+			// Display
+			$("#doc-" + id).fadeIn();
+		});
+	});
+
+	if (event) {
+		event.preventDefault();
+	}
+	return false;
 };
 
 // Handle Shelves Administration
 /**
  * Show the selected shelf
  */
-LocalGed.showShelf = function () {
+LocalGed.showShelf = function() {
 	var btn = $(this);
 	var id = btn.attr("id").substring("btnShowShelf-".length);
 	LocalGed.showDetailShelf(id);
-	
+
 	LocalGed.loadSources(id);
 };
 /**
  * Show Shelf creation dialog
  */
 LocalGed.addShelf = function() {
-	$("#shelf-create-name").attr("value","");
-	$("#shelf-create-description").attr("value","");
+	$("#shelf-create-name").attr("value", "");
+	$("#shelf-create-description").attr("value", "");
 	$("#diaNewShelf").modal('show');
 };
 /**
  * Show shelf (new or existing)
- * @param id the shelf id of false
+ * 
+ * @param id
+ *            the shelf id of false
  */
 LocalGed.showDetailShelf = function(id) {
 	// Hide shelves
@@ -177,34 +202,34 @@ LocalGed.showDetailShelf = function(id) {
 	$("#sourceDetail").addClass("hidden");
 	// show Detail
 	$("#shelfDetail").removeClass("hidden");
-	
+
 	// Detail of a Shelf
 	LocalGed.shelf = id;
-	$("#shelf-update-id").attr("value",id);
-	
-	var name = $("#shelf-"+id+" h2").text();
-	$("#shelf-name").attr("value",name);
+	$("#shelf-update-id").attr("value", id);
+
+	var name = $("#shelf-" + id + " h2").text();
+	$("#shelf-name").attr("value", name);
 	$("#shelf-name").focus();
 
-	var descr = $("#shelf-"+id+" p").text();
-	$("#shelf-description").attr("value",descr);
-	
+	var descr = $("#shelf-" + id + " p").text();
+	$("#shelf-description").attr("value", descr);
+
 	$("#breadcrumb-shelves").addClass("hidden");
 	$("#breadcrumb-shelf").removeClass("hidden");
 	$("#breadcrumb-source").addClass("hidden");
-	
+
 	$("#breadcrumb-shelf li.active").text(name);
 	$("#breadcrumb-source .returnToShelf").text(name);
-	
+
 	// Save button
 	$("#btnSaveShelf").text("Update");
 	$("#btnAddSource").removeAttr("disabled");
-	
+
 	// REST get shelf/{id}
 	var shelves = new RestServiceJs("rest/shelves");
 	shelves.find(id, function(json) {
-		$("#shelf-name").attr("value",json.name);
-		$("#shelf-description").attr("value",json.description)		
+		$("#shelf-name").attr("value", json.name);
+		$("#shelf-description").attr("value", json.description)
 	});
 };
 /**
@@ -213,17 +238,17 @@ LocalGed.showDetailShelf = function(id) {
 LocalGed.deleteShelf = function() {
 	var btn = $(this);
 	var id = btn.attr("id").substring("btnDelShelf-".length);
-	
-	var name = $("#shelf-"+id +" h2").text();
-	var msg = "Do you realy want to delete '" + name+"' ?";
+
+	var name = $("#shelf-" + id + " h2").text();
+	var msg = "Do you realy want to delete '" + name + "' ?";
 
 	LocalGed.doConfirm(msg, function() {
 		// REST delete shelf/{id}
 		var shelves = new RestServiceJs("rest/shelves");
 		shelves.remove(id, function() {
 			// Display
-			$("#shelf-"+id).hide();
-			$("#shelf-"+id).detach();
+			$("#shelf-" + id).hide();
+			$("#shelf-" + id).detach();
 		});
 	});
 };
@@ -235,28 +260,28 @@ LocalGed.saveShelf = function() {
 	shelf.id = $("#shelf-update-id").val();
 	shelf.name = $("#shelf-name").val();
 	shelf.description = $("#shelf-description").val();
-	
-	//  REST put shelf
+
+	// REST put shelf
 	var shelves = new RestServiceJs("rest/shelves");
 	shelves.put(shelf, function(json) {
 		// update field on OK
-		$("#shelf-name").attr("value",json.name);
-		$("#shelf-description").attr("value",json.description)
-		
-		LocalGed.notify("admin","success","Shelf updated");
+		$("#shelf-name").attr("value", json.name);
+		$("#shelf-description").attr("value", json.description)
+
+		LocalGed.notify("admin", "success", "Shelf updated");
 	});
 };
 /**
  * Handle Create Shelf
  */
 LocalGed.handleCreateShelf = function(e) {
-	LocalGed.doOnEnter(e,LocalGed.createShelf);
+	LocalGed.doOnEnter(e, LocalGed.createShelf);
 }
 /**
  * Handle Update Shelf
  */
 LocalGed.handleUpdateShelf = function(e) {
-	LocalGed.doOnEnter(e,LocalGed.saveShelf);
+	LocalGed.doOnEnter(e, LocalGed.saveShelf);
 }
 /**
  * Create the current shelf
@@ -265,7 +290,7 @@ LocalGed.createShelf = function() {
 	var shelf = {};
 	shelf.name = $("#shelf-create-name").val();
 	shelf.description = $("#shelf-create-description").val();
-	
+
 	var shelves = new RestServiceJs("rest/shelves");
 	shelves.put(shelf, function(json) {
 		$('#diaNewShelf').modal('hide');
@@ -282,11 +307,11 @@ LocalGed.backShelves = function() {
 	$("#sourceDetail").addClass("hidden");
 	// show Shelves
 	$("#shelves").removeClass("hidden");
-	
+
 	$("#breadcrumb-shelves").removeClass("hidden");
 	$("#breadcrumb-shelf").addClass("hidden");
 	$("#breadcrumb-source").addClass("hidden");
-	
+
 	LocalGed.shelf = null;
 	LocalGed.loadShelves();
 };
@@ -298,47 +323,47 @@ LocalGed.loadShelves = function() {
 	shelves.findAll(function(json) {
 		// Refresh shelves
 		$("#shelves .row").empty();
-		$.each(json, function(index,s){
+		$.each(json, function(index, s) {
 			var id = s.id;
 
-			var html= ich.shelf(s);
+			var html = ich.shelf(s);
 			$("#shelves .row").append(html);
-			
+
 			// bind actions
-			$("#btnShowShelf-"+id).click(LocalGed.showShelf);
-			$("#btnDelShelf-"+id).click(LocalGed.deleteShelf);
-			
+			$("#btnShowShelf-" + id).click(LocalGed.showShelf);
+			$("#btnDelShelf-" + id).click(LocalGed.deleteShelf);
+
 			// Display
-			$("#shelf-"+id).fadeIn();
+			$("#shelf-" + id).fadeIn();
 		});
-		
+
 		if (LocalGed.shelf) {
-			$("#btnShowShelf-"+LocalGed.shelf).focus();
+			$("#btnShowShelf-" + LocalGed.shelf).focus();
 			LocalGed.shelf = null;
 		}
 	});
 }
 
-//Handle Sources Administration
+// Handle Sources Administration
 /**
-* Go back to current shelf
-*/
+ * Go back to current shelf
+ */
 LocalGed.backShelf = function() {
 	var shelfId = LocalGed.shelf;
 	LocalGed.showDetailShelf(shelfId);
-	
+
 	$("#breadcrumb-shelves").addClass("hidden");
 	$("#breadcrumb-shelf").removeClass("hidden");
 	$("#breadcrumb-source").addClass("hidden");
-	
+
 	var name = $("#shelf-name").val();
 	$("#breadcrumb-shelf li.active").text(name);
 	$("#breadcrumb-source .returnToShelf").text(name);
 };
 /**
-* Show selected source
-*/
-LocalGed.showSource = function () {
+ * Show selected source
+ */
+LocalGed.showSource = function() {
 	var btn = $(this);
 	var id = btn.attr("id").substring("btnShowSource-".length);
 	LocalGed.showDetailSource(id);
@@ -348,112 +373,120 @@ LocalGed.showSource = function () {
  */
 LocalGed.changeSource = function(e) {
 	var type = $("#source-create-type").val();
-	if (type=="folders") {
+	if (type == "folders") {
 		$("#source-folders-create-detail").removeClass("hidden");
 		$("#source-links-create-detail").addClass("hidden");
-		
+
 		$("#diaNewSource h3").text('Create a new Folder Source');
-	} else if (type=="links") {
+	} else if (type == "links") {
 		$("#source-folders-create-detail").addClass("hidden");
 		$("#source-links-create-detail").removeClass("hidden");
-		
+
 		$("#diaNewSource h3").text('Create a new Links Source');
 	} else {
 		$("#source-folders-create-detail").addClass("hidden");
 		$("#source-links-create-detail").addClass("hidden");
-		
+
 		$("#diaNewSource h3").text('Create a new Source');
 	}
 }
 /**
  * Create a new Source
  */
-LocalGed.addSource = function (type) {
+LocalGed.addSource = function(type) {
 	var kind = 'folders';
-	if(type=='folders' || type=='links') {
+	if (type == 'folders' || type == 'links') {
 		kind = type;
 	} else {
 		$("#source-create-type-container").removeClass("hidden");
 	}
-	
+
 	// Update Select
 	$("#source-create-type").val(kind);
 	LocalGed.changeSource();
-	
+
 	$("#source-create-type").removeClass("hidden");
-	
-	$("#source-create-name").attr("value","");
-	$("#source-create-description").attr("value","");
-	$("#source-create-folder").attr("value","");
-	$("#source-create-recursif").attr("checked",true);
-	$("#source-create-links").attr("value","");
-	
+
+	$("#source-create-name").attr("value", "");
+	$("#source-create-description").attr("value", "");
+	$("#source-create-folder").attr("value", "");
+	$("#source-create-recursif").attr("checked", true);
+	$("#source-create-links").attr("value", "");
+
 	$("#diaNewSource").modal('show');
 };
 /**
  * Add a Folder Source
  */
-LocalGed.addFolders = function (event) {
+LocalGed.addFolders = function(event) {
 	$("#source-create-type-container").addClass("hidden");
 	LocalGed.addSource("folders");
 }
 /**
  * Add a Links Source
  */
-LocalGed.addLinks = function (event) {
+LocalGed.addLinks = function(event) {
 	$("#source-create-type-container").addClass("hidden");
 	LocalGed.addSource("links");
 }
 /**
-* Show source (new or existing)
-* @param id the source id of false
-*/
-LocalGed.showDetailSource = function (id) {
+ * Show source (new or existing)
+ * 
+ * @param id
+ *            the source id of false
+ */
+LocalGed.showDetailSource = function(id) {
 	// Hide shelves
 	$("#shelves").addClass("hidden");
 	// Hide Shelf
 	$("#shelfDetail").addClass("hidden");
 	// Show source
 	$("#sourceDetail").removeClass("hidden");
-	
+
 	// Detail of current source
-	$("#source-id").attr("value",id);
+	$("#source-id").attr("value", id);
 	LocalGed.source = id;
-	
-	var name = $("#source-"+id+" h2").text();
-	$("#source-name").attr("value",name);
+
+	var name = $("#source-" + id + " h2").text();
+	$("#source-name").attr("value", name);
 	$("#source-name").focus();
 
-	var descr = $("#source-"+id+" p").text();
-	$("#source-description").attr("value",descr);
-	
+	var descr = $("#source-" + id + " p").text();
+	$("#source-description").attr("value", descr);
+
 	$("#breadcrumb-shelves").addClass("hidden");
 	$("#breadcrumb-shelf").addClass("hidden");
 	$("#breadcrumb-source").removeClass("hidden");
 
 	$("#breadcrumb-source li.active").text(name);
-	
+
 	// Save button
 	$("#btnSaveSource").text("Update");
 
 	// REST get sources/{id}
 	var sources = new RestServiceJs("rest/sources");
 	sources.find(id, function(json) {
-		$("#source-name").attr("value",json.name);
-		$("#source-description").attr("value",json.description);
-		
+		$("#source-name").attr("value", json.name);
+		$("#source-description").attr("value", json.description);
+
 		if (json.folder) {
 			$("#source-folder-detail").removeClass("hidden");
 			$("#source-links-detail").addClass("hidden");
-			
-			$("#source-folder-field").attr("value",json.folder);
-			$("#source-recursif").attr("checked",json.recursive);
-			
+
+			$("#source-folder-field").attr("value", json.folder);
+			$("#source-recursif").attr("checked", json.recursive);
+
 		} else if (json.links) {
 			$("#source-folder-detail").addClass("hidden");
 			$("#source-links-detail").removeClass("hidden");
-			
-			$("#source-links").attr("value",json.links);
+
+			$("#source-links-all").empty();
+			$("#source-links-all").append("<ul></ul>");
+			$.each(json.links, function(index, lnk) {
+				var id = lnk.id;
+				var html = ich.link(lnk);
+				$("#source-links-all ul").append(html);
+			});
 		}
 	});
 };
@@ -464,7 +497,7 @@ LocalGed.handleSaveSource = function(event) {
 	LocalGed.doOnEnter(event, LocalGed.saveSource);
 }
 /**
- * Update the selected source 
+ * Update the selected source
  */
 LocalGed.saveSource = function() {
 	var src = {};
@@ -472,7 +505,7 @@ LocalGed.saveSource = function() {
 	src.shelfId = LocalGed.shelf;
 	src.name = $("#source-name").val();
 	src.description = $("#source-description").val();
-	
+
 	var isFolder = !$("#source-folder-detail").hasClass("hidden");
 
 	var sources;
@@ -487,15 +520,15 @@ LocalGed.saveSource = function() {
 
 		sources = new RestServiceJs("rest/links");
 	}
-	
+
 	// REST put source
 	sources.put(src, function(json) {
 		// update field on OK
-		$("#source-name").attr("value",json.name);
-		$("#source-description").attr("value",json.description)
+		$("#source-name").attr("value", json.name);
+		$("#source-description").attr("value", json.description)
 		// TODO location
-		
-		LocalGed.notify("admin","success","Source updated");
+
+		LocalGed.notify("admin", "success", "Source updated");
 	});
 };
 /**
@@ -505,31 +538,31 @@ LocalGed.handleCreateSource = function(event) {
 	LocalGed.doOnEnter(event, LocalGed.createSource);
 }
 /**
- * Create a new source 
+ * Create a new source
  */
 LocalGed.createSource = function() {
 	var src = {};
 	src.name = $("#source-create-name").val();
 	src.description = $("#source-create-description").val();
 	src.shelfId = LocalGed.shelf;
-	
+
 	var type = $("#source-create-type").val();
 
 	var sources;
-	if (type=="folders") {
+	if (type == "folders") {
 		// Folder attributes
 		src.path = $("#source-create-folder").val();
 		src.recursive = $("#source-create-recursif").is(":checked");
 
 		sources = new RestServiceJs("rest/folders");
-	} else if (type=="links") {
-		src.links = $("#source-folder").val();
-		
+	} else if (type == "links") {
+		src.links = $("#source-create-links").val();
+
 		sources = new RestServiceJs("rest/links");
-	} 
+	}
 
 	// REST put source
-	sources.put(src , function(json) {
+	sources.put(src, function(json) {
 		$('#diaNewSource').modal('hide');
 		LocalGed.source = JSON.parse(json).id;
 		LocalGed.loadSources(LocalGed.shelf);
@@ -541,16 +574,16 @@ LocalGed.createSource = function() {
 LocalGed.deleteSource = function() {
 	var btn = $(this);
 	var id = btn.attr("id").substring("btnDelSource-".length);
-	
-	var name = $("#source-"+id +" h2").text();
-	var msg = "Do you realy want to delete '" + name+"' ?";
+
+	var name = $("#source-" + id + " h2").text();
+	var msg = "Do you realy want to delete '" + name + "' ?";
 
 	LocalGed.doConfirm(msg, function() {
 		var sources = new RestServiceJs("rest/sources");
 		sources.remove(id, function() {
 			// Display
-			$("#source-"+id).hide();
-			$("#source-"+id).detach();
+			$("#source-" + id).hide();
+			$("#source-" + id).detach();
 		});
 	});
 };
@@ -562,33 +595,33 @@ LocalGed.loadSources = function(shelfId) {
 	sources.find(shelfId, function(json) {
 		// Refresh shelves
 		$("#sources").empty();
-		$.each(json, function(index,s){
+		$.each(json, function(index, s) {
 			var id = s.id;
 
 			// Label & detail
-			if (s.folder) {
+			if (s.path) {
 				s.kind = 'warning';
 				s.kindLabel = 'Folder';
-				s.detail = s.folder;
+				s.detail = s.path;
 			} else {
 				s.kind = 'info';
 				s.kindLabel = 'Links';
 				s.detail = s.links;
 			}
-			
-			var html= ich.source(s);
+
+			var html = ich.source(s);
 			$("#sources").append(html);
-			
+
 			// bind actions
-			$("#btnShowSource-"+id).click(LocalGed.showSource);
-			$("#btnDelSource-"+id).click(LocalGed.deleteSource);
-			
+			$("#btnShowSource-" + id).click(LocalGed.showSource);
+			$("#btnDelSource-" + id).click(LocalGed.deleteSource);
+
 			// Display
-			$("#source-"+id).fadeIn();
+			$("#source-" + id).fadeIn();
 		});
-		
+
 		if (LocalGed.source) {
-			$("#btnShowSource-"+LocalGed.source).focus();
+			$("#btnShowSource-" + LocalGed.source).focus();
 			LocalGed.source = null;
 		}
 	});
@@ -600,71 +633,71 @@ function RestServiceJs(newurl) {
 
 	this.post = function(model, callback) {
 		$.ajax({
-			type: 'POST',
-			url: this.myurl,
-			data: JSON.stringify(model), // '{"name":"' + model.name + '"}',
-			dataType: 'text',
-			processData: false,
-			contentType: 'application/json',
-			success: callback,
-			error: LocalGed.restError,
-			timeout:60000
+			type : 'POST',
+			url : this.myurl,
+			data : JSON.stringify(model), // '{"name":"' + model.name + '"}',
+			dataType : 'text',
+			processData : false,
+			contentType : 'application/json',
+			success : callback,
+			error : LocalGed.restError,
+			timeout : 60000
 		});
 	};
 
-	this.put= function(model, callback) {
+	this.put = function(model, callback) {
 		$.ajax({
-			type: 'PUT',
-			url: this.myurl,
-			data: JSON.stringify(model), // '{"name":"' + model.name + '"}',
-			dataType: 'text',
-			processData: false,
-			contentType: 'application/json',
-			success: callback,
-			error: LocalGed.restError,
-			timeout:60000
+			type : 'PUT',
+			url : this.myurl,
+			data : JSON.stringify(model), // '{"name":"' + model.name + '"}',
+			dataType : 'text',
+			processData : false,
+			contentType : 'application/json',
+			success : callback,
+			error : LocalGed.restError,
+			timeout : 60000
 		});
 	};
-	
+
 	this.find = function(id, callback) {
 		$.ajax({
-			type: 'GET',
-			url: this.myurl + '/' + id,
-			contentType: 'application/json',
-			success: callback,
-			error: LocalGed.restError,
-			timeout:60000
+			type : 'GET',
+			url : this.myurl + '/' + id,
+			contentType : 'application/json',
+			success : callback,
+			error : LocalGed.restError,
+			timeout : 60000
 		});
 	};
 
 	this.findAll = function(callback) {
 		$.ajax({
-			type: 'GET',
-			url: this.myurl,
-			contentType: 'application/json',
-			success: callback,
-			error: LocalGed.restError,
-			timeout:60000
+			type : 'GET',
+			url : this.myurl,
+			contentType : 'application/json',
+			success : callback,
+			error : LocalGed.restError,
+			timeout : 60000
 		});
 	};
-	
+
 	this.remove = function(id, callback) {
 		$.ajax({
-			type: 'DELETE',
-			url: this.myurl + '/' + id,
-			contentType: 'application/json',
-			success: callback,
-			error: LocalGed.restError,
-			timeout:60000
+			type : 'DELETE',
+			url : this.myurl + '/' + id,
+			contentType : 'application/json',
+			success : callback,
+			error : LocalGed.restError,
+			timeout : 60000
 		});
 	};
-	
+
 	this.loadTmpl = function(turl, callback) {
 		$.ajax({
-			url: turl,
-			success: callback,
-			error: LocalGed.restError,
-			timeout:60000
+			url : turl,
+			success : callback,
+			error : LocalGed.restError,
+			timeout : 60000
 		});
 	}
 };
@@ -673,8 +706,8 @@ function RestServiceJs(newurl) {
 /**
  * Do on Enter
  */
-LocalGed.doOnEnter = function(event,func) {
-	if (event.which==13)  {
+LocalGed.doOnEnter = function(event, func) {
+	if (event.which == 13) {
 		event.preventDefault();
 		func();
 		return false;
@@ -684,42 +717,42 @@ LocalGed.doOnEnter = function(event,func) {
 /**
  * Show notify block
  */
-LocalGed.notify = function(page,kind,message) {
-	var div = $('#' +page +'-notify');
+LocalGed.notify = function(page, kind, message) {
+	var div = $('#' + page + '-notify');
 	div.empty();
-	
-	var data ={};
+
+	var data = {};
 	data.kind = kind;
 	data.message = message;
-	
-	if (kind=='success') {
+
+	if (kind == 'success') {
 		data.title = "Yeah !";
-	} else if (kind=='error') {
+	} else if (kind == 'error') {
 		data.title = "Ooops !";
-	} else if (kind=='info') {
+	} else if (kind == 'info') {
 		data.title = "Yop !";
 	} else {
 		data.title = "Hey !";
 	}
-	
+
 	var html = ich.notify(data);
 	div.append(html);
-	
+
 	// Animate
-	div.fadeIn().delay(4000).fadeOut('slow'); 
+	div.fadeIn().delay(4000).fadeOut('slow');
 }
 /**
  * Confirm
  */
 LocalGed.doConfirm = function(msg, func) {
-	LocalGed.confirm = func; 
+	LocalGed.confirm = func;
 	$("#diaConfirmMessage").html(msg);
 	$("#diaConfirm").modal('show');
 };
 /**
  * Handle rest error
  */
-LocalGed.restError = function (req, status, ex) {
+LocalGed.restError = function(req, status, ex) {
 	var msg;
 	if (status) {
 		msg = status;
@@ -728,7 +761,11 @@ LocalGed.restError = function (req, status, ex) {
 	}
 	if (req && req.responseText) {
 		msg += ": ";
-		msg += JSON.parse(req.responseText).message;
+		try {
+			msg += JSON.parse(req.responseText).message;
+		} catch (e) {
+			msg += req.responseText;
+		}
 	}
 	if (ex) {
 		msg += "\n" + ex;
@@ -741,4 +778,3 @@ LocalGed.restError = function (req, status, ex) {
 LocalGed.doError = function(msg) {
 	alert(msg);
 };
-

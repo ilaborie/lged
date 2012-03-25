@@ -13,20 +13,22 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.ilaborie.pineneedles.web.model.IShelf;
-import org.ilaborie.pineneedles.web.model.ISource;
-
 /**
  * The Class ShelfEntity.
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement(name = "source")
-@NamedQueries(@NamedQuery(name = Source.QUERY_FIND_BY_SHELF, query = "From Source s Where s.shelf = :shelf"))
-public class Source implements ISource {
+@NamedQueries({
+		@NamedQuery(name = Source.QUERY_FIND_BY_SHELF, query = "From Source s Where s.shelf = :shelf"),
+		@NamedQuery(name = Source.QUERY_DELETE_BY_SHELF, query = "Delete From Source s Where s.shelf = :shelf")})
+public class Source {
 
 	/** The Constant QUERY_FIND_ALL. */
 	public static final String QUERY_FIND_BY_SHELF = "Source.byShelf";
+	
+	/** The Constant QUERY_DELETE_BY_SHELF. */
+	public static final String QUERY_DELETE_BY_SHELF = "Source.deleteByShelf";
 
 	/** The id. */
 	@Id
@@ -47,32 +49,60 @@ public class Source implements ISource {
 	@XmlIDREF
 	private Shelf shelf;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.ilaborie.pineneedles.web.model.Shelf#getId()
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Source other = (Source) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
+
+	/**
+	 * Gets the id.
+	 *
+	 * @return the id
+	 */
 	public String getId() {
 		return this.id;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.ilaborie.pineneedles.web.model.Shelf#getName()
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
 	 */
-	@Override
 	public String getName() {
 		return this.name;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.ilaborie.pineneedles.web.model.Shelf#getDescription()
+	/**
+	 * Gets the description.
+	 *
+	 * @return the description
 	 */
-	@Override
 	public String getDescription() {
 		return this.description;
 	}
@@ -109,8 +139,7 @@ public class Source implements ISource {
 	 *
 	 * @return the shelf
 	 */
-	@Override
-	public IShelf getShelf() {
+	public Shelf getShelf() {
 		return this.shelf;
 	}
 
