@@ -264,8 +264,9 @@ LocalGed.saveShelf = function() {
 	var shelves = new RestServiceJs("rest/shelves");
 	shelves.put(shelf, function(json) {
 		// update field on OK
-		$("#shelf-name").val(json.name);
-		$("#shelf-description").val(json.description)
+		var s = JSON.parse(json);
+		$("#shelf-name").val(s.name);
+		$("#shelf-description").val(s.description)
 
 		LocalGed.notify("admin", "success", "Shelf updated");
 	});
