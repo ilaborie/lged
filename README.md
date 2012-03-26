@@ -88,7 +88,6 @@ Update links on <http://localhost:8080/org.ilaborie.pineneedles/rest/links>
 	
 TODO / Ideas
 ------------
-* Better Error dialog
 
 ### Web Check
 
@@ -98,13 +97,13 @@ TODO / Ideas
 
 ### Search
 
-* use field for Chrome search
-
 * rest/search?q=
 * rest/search?q= + fq (on source, on shelve, field)
 * Faceting
 * paging
 * opening docs
+
+* use field for Chrome search
 
 ### Index
 
@@ -113,7 +112,6 @@ TODO / Ideas
 
 ### Administration
 
-* Better Error Message (Notice ?)
 * Support autocompletion for tag
 
 * Extract favicon from links
@@ -126,14 +124,3 @@ TODO / Ideas
 ### About
 
 * Shiny HTML5 animation (pine cone fall, + rotating)
-
-### Possible Background
-
-* Search with brown color (like wooden texture) (Texture dusty wood)
-<http://tzolkin.deviantart.com/art/Texture-Dusty-Wood-70928532?q=boost%3Apopular%20wood%20texture&qo=9>
-
-<https://secure.flickr.com/photos/24557420@N05/3975359536/sizes/o/in/photostream/>
-<https://secure.flickr.com/photos/nouspique/4633864261/sizes/o/in/photostream/>
-<https://secure.flickr.com/photos/tomtolkien/4670166552/sizes/o/in/photostream/>
-<https://secure.flickr.com/photos/wxmom/3541976351/sizes/o/in/photostream/>
-<https://secure.flickr.com/photos/martinlabar/3380449660/sizes/o/in/photostream/>

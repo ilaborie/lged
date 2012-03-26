@@ -115,7 +115,6 @@ LocalGed.switchPage = function(page) {
  */
 LocalGed.showSearch = function() {
 	LocalGed.switchPage('search');
-	$("#admin-content").addClass("hidden");
 	$("#q").focus();
 };
 /**
@@ -123,7 +122,6 @@ LocalGed.showSearch = function() {
  */
 LocalGed.showAdmin = function() {
 	LocalGed.switchPage('admin');
-	$("#admin-content").removeClass("hidden");
 	LocalGed.loadShelves();
 };
 /**
@@ -131,7 +129,6 @@ LocalGed.showAdmin = function() {
  */
 LocalGed.showAbout = function() {
 	LocalGed.switchPage('about');
-	$("#admin-content").addClass("hidden");
 };
 
 // Search
@@ -268,7 +265,7 @@ LocalGed.saveShelf = function() {
 		$("#shelf-name").val(s.name);
 		$("#shelf-description").val(s.description)
 
-		LocalGed.notify("admin", "success", "Shelf updated");
+		LocalGed.notify("success", "Shelf updated");
 	});
 };
 /**
@@ -552,7 +549,7 @@ LocalGed.saveSource = function() {
 		$("#source-name").val(json.name);
 		$("#source-description").val(json.description)
 
-		LocalGed.notify("admin", "success", "Source updated");
+		LocalGed.notify("success", "Source updated");
 	});
 };
 /**
@@ -829,8 +826,8 @@ LocalGed.doOnEnter = function(event, func) {
 /**
  * Show notify block
  */
-LocalGed.notify = function(page, kind, message) {
-	var div = $('#' + page + '-notify');
+LocalGed.notify = function(kind, message) {
+	var div = $('#zone-notify');
 	div.empty();
 
 	var data = {};
@@ -882,11 +879,25 @@ LocalGed.restError = function(req, status, ex) {
 	if (ex) {
 		msg += "\n" + ex;
 	}
-	LocalGed.doError(msg);
+	// error in Dialog
+	var div = $(".modal.fade.in div.zone-notify");
+	div.empty();
+
+	var data = {};
+	data.kind = "error";
+	data.title = "Ooops !";
+	data.message = msg;
+
+	var html = ich.notify(data);
+	div.append(html);
+
+	// Animate
+	div.fadeIn().delay(4000).fadeOut('slow');
+
 }
 /**
  * Error
  */
 LocalGed.doError = function(msg) {
-	alert(msg);
+	LocalGed.notify("error",msg);
 };
