@@ -17,6 +17,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.ilaborie.pineneedles.web.model.Document;
 import org.ilaborie.pineneedles.web.model.Documents;
+import org.ilaborie.pineneedles.web.util.ResponseBuilder;
 import org.slf4j.Logger;
 
 import com.google.common.collect.Lists;
@@ -50,7 +51,7 @@ public class Search {
 
 		Documents docs = this.retrieveDocuments(query);
 
-		return Response.ok(docs).build();
+		return ResponseBuilder.ok(docs);
 	}
 
 	/**

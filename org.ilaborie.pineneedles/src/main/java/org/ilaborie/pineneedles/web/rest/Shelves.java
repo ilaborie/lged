@@ -1,6 +1,5 @@
 package org.ilaborie.pineneedles.web.rest;
 
-import java.util.List;
 import java.util.UUID;
 
 import javax.ejb.Stateless;
@@ -18,12 +17,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.ilaborie.pineneedles.web.model.Message;
-import org.ilaborie.pineneedles.web.model.entity.Shelf;
-import org.ilaborie.pineneedles.web.model.entity.Source;
+import org.ilaborie.pineneedles.web.model.Shelf;
+import org.ilaborie.pineneedles.web.model.entity.ShelfEntity;
+import org.ilaborie.pineneedles.web.model.entity.SourceEntity;
+import org.ilaborie.pineneedles.web.util.ResponseBuilder;
 import org.slf4j.Logger;
 
 import com.google.common.base.Strings;
@@ -55,11 +54,11 @@ public class Shelves {
 	 * @return the list
 	 */
 	@GET
-	public List<Shelf> findAll() {
+	public Response findAll() {
 		logger.info("Shelves#FindAll() : {}", this.uriInfo.getAbsolutePath());
 
-		TypedQuery<Shelf> query = this.em.createNamedQuery(Shelf.QUERY_FIND_ALL, Shelf.class);
-		return Lists.newArrayList(query.getResultList());
+		TypedQuery<ShelfEntity> query = this.em.createNamedQuery(ShelfEntity.QUERY_FIND_ALL, ShelfEntity.class);
+		return ResponseBuilder.ok(Lists.newArrayList(query.getResultList()));
 	}
 
 	/**
@@ -72,13 +71,13 @@ public class Shelves {
 	@Path("{id}")
 	public Response findById(@PathParam("id") String id) {
 		logger.info("Shelves#FindById() : {}", this.uriInfo.getAbsolutePath());
-		Shelf shelf = this.em.find(Shelf.class, id);
+		ShelfEntity shelf = this.em.find(ShelfEntity.class, id);
 
 		Response response;
 		if (shelf == null) {
-			response = Response.status(Status.NO_CONTENT).build();
+			response = ResponseBuilder.emptyResult();
 		} else {
-			response = Response.ok(shelf).build();
+			response = ResponseBuilder.ok(shelf);
 		}
 		return response;
 	}
@@ -95,25 +94,23 @@ public class Shelves {
 		logger.info("Shelves#deleteById() : {}", this.uriInfo.getAbsolutePath());
 
 		try {
-			Shelf entity = this.em.find(Shelf.class, id);
+			ShelfEntity entity = this.em.find(ShelfEntity.class, id);
 			if (entity == null) {
-				return Response.status(Status.BAD_REQUEST)
-				        .entity( new Message("Could not find the shelf: " + id)).build();
+				return ResponseBuilder.notFound("shelf", id);
 			}
-			
+
 			// Delete all sources
-			Query query = this.em.createNamedQuery(Source.QUERY_DELETE_BY_SHELF);
+			Query query = this.em.createNamedQuery(SourceEntity.QUERY_DELETE_BY_SHELF);
 			query.setParameter("shelf", entity);
 			query.executeUpdate();
 
 			// Delete shelf
 			this.em.remove(entity);
-			return Response.ok( new Message("Shelf deleted: " + id)).build();
+			return ResponseBuilder.deleted("Shelf ", id);
 		} catch (Exception e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return ResponseBuilder.fail(e);
 		}
 	}
-
 
 	/**
 	 * Creates the.
@@ -122,19 +119,17 @@ public class Shelves {
 	 * @return the shelf
 	 */
 	@PUT
-	public Response createOrUpdate(Shelf entity) {
+	public Response createOrUpdate(Shelf shelf) {
 		logger.info("Shelves#create() : {}", this.uriInfo.getAbsolutePath());
-		String name = entity.getName();
-		String description = entity.getDescription();
+		String name = shelf.getName();
+		String description = shelf.getDescription();
 
 		if (Strings.isNullOrEmpty(name)) {
-			return Response
-			        .status(Response.Status.BAD_REQUEST)
-			        .entity( new Message("'name' parameter must not be null"))
-			        .build();
+			return ResponseBuilder.nullArgument("name");
 		}
 
 		// Clean fields
+		ShelfEntity entity = new ShelfEntity();
 		entity.setName(name.trim());
 		if (description != null) {
 			entity.setDescription(Strings.nullToEmpty(description.trim()));
@@ -146,7 +141,7 @@ public class Shelves {
 				// Create
 				entity.setId(this.createId());
 				this.em.persist(entity);
-				response = Response.status(Status.CREATED).entity(entity).build();
+				response = ResponseBuilder.created(entity);
 			} else {
 				// Update
 				this.em.merge(entity);
@@ -154,7 +149,7 @@ public class Shelves {
 			}
 			return response;
 		} catch (Exception e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return ResponseBuilder.fail(e);
 		}
 	}
 

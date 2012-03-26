@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.ilaborie.pineneedles.web.util.Capitalize;
+import org.ilaborie.pineneedles.web.util.func.Capitalize;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;

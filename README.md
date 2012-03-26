@@ -113,9 +113,6 @@ TODO / Ideas
 
 ### Administration
 
-* BUG: Update Shelf => empty fields...
-* Response Helper: BadRequest, Created, OK, source not found
-* Suffix all Entity
 * Better Error Message (Notice ?)
 * Support autocompletion for tag
 

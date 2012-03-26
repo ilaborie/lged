@@ -17,9 +17,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.ilaborie.pineneedles.web.model.FolderSource;
-import org.ilaborie.pineneedles.web.model.Message;
-import org.ilaborie.pineneedles.web.model.entity.Shelf;
-import org.ilaborie.pineneedles.web.model.entity.SourceFolder;
+import org.ilaborie.pineneedles.web.model.entity.ShelfEntity;
+import org.ilaborie.pineneedles.web.model.entity.FolderSourceEntity;
+import org.ilaborie.pineneedles.web.util.ResponseBuilder;
 import org.slf4j.Logger;
 
 import com.google.common.base.Strings;
@@ -63,27 +63,18 @@ public class Folders {
 		boolean recursive = folder.isRecursive();
 
 		if (Strings.isNullOrEmpty(name)) {
-			return Response
-			        .status(Response.Status.BAD_REQUEST)
-			        .entity(new Message("'name' parameter must not be null"))
-			        .build();
+			return ResponseBuilder.nullArgument("name");
 		}
 		if (Strings.isNullOrEmpty(path)) {
-			return Response
-			        .status(Response.Status.BAD_REQUEST)
-			        .entity(new Message("'path' parameter must not be null"))
-			        .build();
+			return ResponseBuilder.nullArgument("path");
 		}
 		File file = new File(path);
 		if (!file.exists() || !file.isDirectory()) {
-			return Response
-			        .status(Response.Status.BAD_REQUEST)
-			        .entity(new Message("Folder does not exists: " + file))
-			        .build();
+			return ResponseBuilder.notFound("folder", path);
 		}
 
 		// Clean fields
-		SourceFolder entity = new SourceFolder();
+		FolderSourceEntity entity = new FolderSourceEntity();
 		entity.setName(name.trim());
 		if (description != null) {
 			entity.setDescription(Strings.nullToEmpty(description.trim()));
@@ -92,11 +83,9 @@ public class Folders {
 		entity.setFolder(file.getAbsolutePath());
 
 		try {
-			Shelf shelf = this.em.find(Shelf.class, shelfId);
+			ShelfEntity shelf = this.em.find(ShelfEntity.class, shelfId);
 			if (shelf == null) {
-				return Response.status(Status.BAD_REQUEST)
-				        .entity(new Message("Could not find the shelf: " + shelfId))
-				        .build();
+				return ResponseBuilder.notFound("shelf", shelfId);
 			}
 
 			entity.setShelf(shelf);
@@ -106,12 +95,12 @@ public class Folders {
 				// Create
 				entity.setId(this.createId());
 				this.em.persist(entity);
-				response = Response.status(Status.CREATED).entity(entity).build();
+				response = ResponseBuilder.created(entity);
 			} else {
 				// Update
 				entity.setId(id);
 				this.em.merge(entity);
-				response = Response.ok(entity).build();
+				response = ResponseBuilder.ok(entity);
 			}
 			return response;
 		} catch (Exception e) {

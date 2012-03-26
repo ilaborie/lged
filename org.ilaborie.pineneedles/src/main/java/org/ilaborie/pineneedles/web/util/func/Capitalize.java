@@ -1,4 +1,4 @@
-package org.ilaborie.pineneedles.web.util;
+package org.ilaborie.pineneedles.web.util.func;
 
 import com.google.common.base.Function;
 import com.google.common.base.Strings;

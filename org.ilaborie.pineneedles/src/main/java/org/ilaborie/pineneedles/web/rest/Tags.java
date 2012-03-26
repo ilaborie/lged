@@ -18,11 +18,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.ilaborie.pineneedles.web.model.Message;
 import org.ilaborie.pineneedles.web.model.Tag;
+import org.ilaborie.pineneedles.web.util.ResponseBuilder;
 import org.slf4j.Logger;
 
 import com.google.common.base.Strings;
@@ -59,9 +59,9 @@ public class Tags {
 			List<Object[]> lst = query.getResultList();
 			List<Tag> result = this.createTags(lst);
 
-			return Response.ok(result).build();
+			return ResponseBuilder.ok(result);
 		} catch (Exception e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return ResponseBuilder.fail(e);
 		}
 	}
 
@@ -72,8 +72,7 @@ public class Tags {
 		logger.info("Tags#findAll() : {}", this.uriInfo.getAbsolutePath());
 
 		if (Strings.isNullOrEmpty(startWith)) {
-			return Response.status(Status.BAD_REQUEST)
-			        .entity(new Message("'startWith' should not been empty !")).build();
+			return ResponseBuilder.nullArgument("startWith");
 		}
 
 		try {
@@ -82,9 +81,9 @@ public class Tags {
 			List<Object[]> lst = query.getResultList();
 			List<Tag> result = this.createTags(lst);
 
-			return Response.ok(result).build();
+			return ResponseBuilder.ok(result);
 		} catch (Exception e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return ResponseBuilder.fail(e);
 		}
 	}
 
@@ -101,8 +100,7 @@ public class Tags {
 		logger.info("Tags#findAll() : {}", this.uriInfo.getAbsolutePath());
 
 		if (Strings.isNullOrEmpty(from)) {
-			return Response.status(Status.BAD_REQUEST)
-			        .entity(new Message("'to' should not been empty !")).build();
+			return ResponseBuilder.nullArgument("from");
 		}
 		try {
 			Query query = this.em.createNativeQuery("UPDATE tag SET tags = :to WHERE tags = :from");
@@ -112,7 +110,7 @@ public class Tags {
 
 			return Response.ok(new Message("Updated: " + update)).build();
 		} catch (Exception e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return ResponseBuilder.fail(e);
 		}
 	}
 

@@ -20,9 +20,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement(name = "source")
 @NamedQueries({
-		@NamedQuery(name = Source.QUERY_FIND_BY_SHELF, query = "From Source s Where s.shelf = :shelf"),
-		@NamedQuery(name = Source.QUERY_DELETE_BY_SHELF, query = "Delete From Source s Where s.shelf = :shelf")})
-public class Source {
+		@NamedQuery(name = SourceEntity.QUERY_FIND_BY_SHELF, query = "From SourceEntity s Where s.shelf = :shelf"),
+		@NamedQuery(name = SourceEntity.QUERY_DELETE_BY_SHELF, query = "Delete From SourceEntity s Where s.shelf = :shelf")})
+public class SourceEntity {
 
 	/** The Constant QUERY_FIND_ALL. */
 	public static final String QUERY_FIND_BY_SHELF = "Source.byShelf";
@@ -47,7 +47,7 @@ public class Source {
 	/** The shelf. */
 	@ManyToOne
 	@XmlIDREF
-	private Shelf shelf;
+	private ShelfEntity shelf;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -71,7 +71,7 @@ public class Source {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Source other = (Source) obj;
+		SourceEntity other = (SourceEntity) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -139,7 +139,7 @@ public class Source {
 	 *
 	 * @return the shelf
 	 */
-	public Shelf getShelf() {
+	public ShelfEntity getShelf() {
 		return this.shelf;
 	}
 
@@ -148,7 +148,7 @@ public class Source {
 	 *
 	 * @param shelf the new shelf
 	 */
-	public void setShelf(Shelf shelf) {
+	public void setShelf(ShelfEntity shelf) {
 		this.shelf = shelf;
 	}
 

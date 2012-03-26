@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement(name = "folder")
-public class SourceFolder extends Source {
+public class FolderSourceEntity extends SourceEntity {
 
 	/** The recursive. */
 	@XmlAttribute
@@ -23,7 +23,7 @@ public class SourceFolder extends Source {
 	/**
 	 * Instantiates a new source folder.
 	 */
-	public SourceFolder() {
+	public FolderSourceEntity() {
 		super();
 	}
 

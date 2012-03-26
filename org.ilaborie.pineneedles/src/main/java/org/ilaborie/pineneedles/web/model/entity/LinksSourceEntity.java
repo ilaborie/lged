@@ -14,7 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement(name = "links")
-public class SourceLinks extends Source {
+public class LinksSourceEntity extends SourceEntity {
 
 	/** The links. */
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)

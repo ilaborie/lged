@@ -21,16 +21,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.ilaborie.pineneedles.web.model.Link;
 import org.ilaborie.pineneedles.web.model.LinksSource;
-import org.ilaborie.pineneedles.web.model.Message;
 import org.ilaborie.pineneedles.web.model.entity.LinkEntry;
-import org.ilaborie.pineneedles.web.model.entity.Shelf;
-import org.ilaborie.pineneedles.web.model.entity.SourceLinks;
-import org.ilaborie.pineneedles.web.util.Capitalize;
+import org.ilaborie.pineneedles.web.model.entity.ShelfEntity;
+import org.ilaborie.pineneedles.web.model.entity.LinksSourceEntity;
+import org.ilaborie.pineneedles.web.util.ResponseBuilder;
+import org.ilaborie.pineneedles.web.util.func.Capitalize;
 import org.slf4j.Logger;
 
 import com.google.common.base.CharMatcher;
@@ -84,20 +83,14 @@ public class Links {
 		String links = source.getLinks();
 
 		if (Strings.isNullOrEmpty(name)) {
-			return Response
-			        .status(Response.Status.BAD_REQUEST)
-			        .entity(new Message("'name' parameter must not be null"))
-			        .build();
+			return ResponseBuilder.nullArgument("name");
 		}
 		if (Strings.isNullOrEmpty(links)) {
-			return Response
-			        .status(Response.Status.BAD_REQUEST)
-			        .entity(new Message("'links' parameter must not be null"))
-			        .build();
+			return ResponseBuilder.nullArgument("links");
 		}
 
 		// Clean fields
-		SourceLinks entity = new SourceLinks();
+		LinksSourceEntity entity = new LinksSourceEntity();
 		entity.setName(name.trim());
 		if (description != null) {
 			entity.setDescription(Strings.nullToEmpty(description.trim()));
@@ -106,11 +99,9 @@ public class Links {
 		entity.setLinks(this.createLinks(links));
 
 		try {
-			Shelf shelf = this.em.find(Shelf.class, shelfId);
+			ShelfEntity shelf = this.em.find(ShelfEntity.class, shelfId);
 			if (shelf == null) {
-				return Response.status(Status.BAD_REQUEST)
-				        .entity(new Message("Could not find the shelf: " + shelfId))
-				        .build();
+				return ResponseBuilder.notFound("shelf", shelfId);
 			}
 
 			entity.setShelf(shelf);
@@ -120,16 +111,16 @@ public class Links {
 				// Create
 				entity.setId(this.createId());
 				this.em.persist(entity);
-				response = Response.status(Status.CREATED).entity(entity).build();
+				response = ResponseBuilder.created(entity);
 			} else {
 				// Update
 				entity.setId(id);
 				this.em.merge(entity);
-				response = Response.ok(entity).build();
+				response = ResponseBuilder.ok(entity);
 			}
 			return response;
 		} catch (Exception e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return ResponseBuilder.fail(e);
 		}
 	}
 
@@ -150,18 +141,12 @@ public class Links {
 		String tags = link.getTags();
 
 		if (Strings.isNullOrEmpty(lnk)) {
-			return Response
-			        .status(Response.Status.BAD_REQUEST)
-			        .entity(new Message("'name' parameter must not be null"))
-			        .build();
+			return ResponseBuilder.nullArgument("name");
 		}
 		try {
 			new URL(lnk);
 		} catch (MalformedURLException e1) {
-			return Response
-			        .status(Response.Status.BAD_REQUEST)
-			        .entity(new Message("'link' parameter should be a valid URL"))
-			        .build();
+			return ResponseBuilder.nullArgument("name");
 		}
 
 		// Clean fields
@@ -175,11 +160,9 @@ public class Links {
 		entity.setTags(Sets.newHashSet(TAGS_SPLITTER.split(tags)));
 
 		try {
-			SourceLinks source = this.em.find(SourceLinks.class, sourceId);
+			LinksSourceEntity source = this.em.find(LinksSourceEntity.class, sourceId);
 			if (source == null) {
-				return Response.status(Status.BAD_REQUEST)
-				        .entity(new Message("Could not find the source: " + sourceId))
-				        .build();
+				return ResponseBuilder.notFound("source", sourceId);
 			}
 
 			source.getLinks().add(entity);
@@ -189,15 +172,15 @@ public class Links {
 				// Create
 				entity.setId(this.createId());
 				this.em.merge(source);
-				response = Response.status(Status.CREATED).entity(source).build();
+				response = ResponseBuilder.created(source);
 			} else {
 				// Update
 				this.em.merge(entity);
-				response = Response.ok(source).build();
+				response = ResponseBuilder.ok(source);
 			}
 			return response;
 		} catch (Exception e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return ResponseBuilder.fail(e);
 		}
 	}
 
@@ -214,18 +197,18 @@ public class Links {
 			LinkEntry entity = this.em.find(LinkEntry.class, id);
 
 			// TODO use a NamedQuery
-			TypedQuery<SourceLinks> query = this.em.createQuery("From SourceLinks s Where :link Member Of s.links ", SourceLinks.class);
+			TypedQuery<LinksSourceEntity> query = this.em.createQuery("From SourceLinks s Where :link Member Of s.links ", LinksSourceEntity.class);
 			query.setParameter("link", entity);
-			SourceLinks source = query.getSingleResult();
+			LinksSourceEntity source = query.getSingleResult();
 
 			source.getLinks().remove(entity);
 			this.em.merge(source);
 
 			this.em.remove(entity);
 
-			return Response.ok(source).build();
+			return ResponseBuilder.ok(source);
 		} catch (Exception e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return ResponseBuilder.fail(e);
 		}
 	}
 

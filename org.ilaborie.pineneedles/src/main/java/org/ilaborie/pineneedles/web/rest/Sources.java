@@ -15,17 +15,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import org.ilaborie.pineneedles.web.model.BaseSource;
 import org.ilaborie.pineneedles.web.model.FolderSource;
 import org.ilaborie.pineneedles.web.model.LinksSource;
-import org.ilaborie.pineneedles.web.model.Message;
-import org.ilaborie.pineneedles.web.model.entity.Shelf;
-import org.ilaborie.pineneedles.web.model.entity.Source;
-import org.ilaborie.pineneedles.web.model.entity.SourceFolder;
-import org.ilaborie.pineneedles.web.model.entity.SourceLinks;
+import org.ilaborie.pineneedles.web.model.entity.ShelfEntity;
+import org.ilaborie.pineneedles.web.model.entity.SourceEntity;
+import org.ilaborie.pineneedles.web.model.entity.FolderSourceEntity;
+import org.ilaborie.pineneedles.web.model.entity.LinksSourceEntity;
+import org.ilaborie.pineneedles.web.util.ResponseBuilder;
 import org.slf4j.Logger;
 
 import com.google.common.base.Function;
@@ -44,7 +43,7 @@ public class Sources {
 	/**
 	 * The Class EntityToPojo.
 	 */
-	private final class EntityToPojo implements Function<Source, BaseSource> {
+	private final class EntityToPojo implements Function<SourceEntity, BaseSource> {
 
 		/**
 		 * Apply.
@@ -53,12 +52,12 @@ public class Sources {
 		 * @return the base source
 		 */
 		@Override
-		public BaseSource apply(Source input) {
+		public BaseSource apply(SourceEntity input) {
 			BaseSource result = null;
-			if (input instanceof SourceFolder) {
-				result = this.transform((SourceFolder) input);
-			} else if (input instanceof SourceLinks) {
-				result = this.transform((SourceLinks) input);
+			if (input instanceof FolderSourceEntity) {
+				result = this.transform((FolderSourceEntity) input);
+			} else if (input instanceof LinksSourceEntity) {
+				result = this.transform((LinksSourceEntity) input);
 			}
 			return result;
 		}
@@ -69,7 +68,7 @@ public class Sources {
 		 * @param input the input
 		 * @return the base source
 		 */
-		private BaseSource transform(SourceFolder input) {
+		private BaseSource transform(FolderSourceEntity input) {
 			FolderSource result = new FolderSource();
 			result.setId(input.getId());
 			result.setName(input.getName());
@@ -85,7 +84,7 @@ public class Sources {
 		 * @param input the input
 		 * @return the base source
 		 */
-		private BaseSource transform(SourceLinks input) {
+		private BaseSource transform(LinksSourceEntity input) {
 			LinksSource result = new LinksSource();
 			result.setId(input.getId());
 			result.setName(input.getName());
@@ -131,17 +130,17 @@ public class Sources {
 	 */
 	@GET
 	@Path("shelf/{id}")
-	public List<BaseSource> findByShelf(@PathParam("id") String shelfId) {
+	public Response findByShelf(@PathParam("id") String shelfId) {
 		logger.info("Sources#findByShelf() : {}", this.uriInfo.getAbsolutePath());
 
-		TypedQuery<Source> query = this.em.createNamedQuery(Source.QUERY_FIND_BY_SHELF, Source.class);
-		Shelf shelf = this.em.find(Shelf.class, shelfId);
+		TypedQuery<SourceEntity> query = this.em.createNamedQuery(SourceEntity.QUERY_FIND_BY_SHELF, SourceEntity.class);
+		ShelfEntity shelf = this.em.find(ShelfEntity.class, shelfId);
 		query.setParameter("shelf", shelf);
 
-		List<Source> entities = query.getResultList();
+		List<SourceEntity> entities = query.getResultList();
 
-		Function<Source, BaseSource> function = new EntityToPojo();
-		return Lists.newArrayList(Iterables.transform(entities, function));
+		Function<SourceEntity, BaseSource> function = new EntityToPojo();
+		return ResponseBuilder.ok(Lists.newArrayList(Iterables.transform(entities, function)));
 	}
 
 	/**
@@ -155,13 +154,13 @@ public class Sources {
 	public Response findById(@PathParam("id") String id) {
 		logger.info("Sources#FindById() : {}", this.uriInfo.getAbsolutePath());
 
-		Source source = this.em.find(Source.class, id);
-		
+		SourceEntity source = this.em.find(SourceEntity.class, id);
+
 		Response response;
 		if (source == null) {
-			response = Response.status(Status.NO_CONTENT).build();
+			response = ResponseBuilder.emptyResult();
 		} else {
-			response = Response.ok(source).build();
+			response = ResponseBuilder.ok(source);
 		}
 		return response;
 	}
@@ -178,15 +177,14 @@ public class Sources {
 		logger.info("Sources#deleteById() : {}", this.uriInfo.getAbsolutePath());
 
 		try {
-			Source entity = this.em.find(Source.class, id);
+			SourceEntity entity = this.em.find(SourceEntity.class, id);
 			if (entity == null) {
-				return Response.status(Status.BAD_REQUEST)
-				        .entity(new Message("Could not find the source: " + id)).build();
+				return ResponseBuilder.notFound("source", id);
 			}
 			this.em.remove(entity);
-			return Response.ok(new Message("Source deleted: " + id)).build();
+			return ResponseBuilder.deleted("Source", id);
 		} catch (Exception e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e).build();
+			return ResponseBuilder.fail(e);
 		}
 	}
 
