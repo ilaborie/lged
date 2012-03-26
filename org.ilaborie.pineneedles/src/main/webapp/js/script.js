@@ -115,6 +115,7 @@ LocalGed.switchPage = function(page) {
  */
 LocalGed.showSearch = function() {
 	LocalGed.switchPage('search');
+	$("#admin-content").addClass("hidden");
 	$("#q").focus();
 };
 /**
@@ -122,6 +123,7 @@ LocalGed.showSearch = function() {
  */
 LocalGed.showAdmin = function() {
 	LocalGed.switchPage('admin');
+	$("#admin-content").removeClass("hidden");
 	LocalGed.loadShelves();
 };
 /**
@@ -129,6 +131,7 @@ LocalGed.showAdmin = function() {
  */
 LocalGed.showAbout = function() {
 	LocalGed.switchPage('about');
+	$("#admin-content").addClass("hidden");
 };
 
 // Search

@@ -13,8 +13,10 @@ body {
    ========================================================================== */
 
 // Colors
-@colorShelf: #FFD9B3;
-@colorSource: #E5F7FF;
+//@colorShelf: #FFD9B3;
+//@colorSource: #E5F7FF;
+@colorShelf: #EEE;
+@colorSource: #EEE;
 
 @colorLocation: #0D633C;
 
@@ -24,6 +26,34 @@ body {
 // Size
 @textareaHeight: 5.6em;
 
+// Skins
+
+body.skin1 {
+	background-image: url(../img/back_1.jpg);
+	background-repeat: repeat;
+	
+	.container {
+		
+		.content {
+			.border-radius();
+			.box-shadow();
+		
+			background-image: url(../img/wash-white-30.png);
+			margin: 0px;
+			padding: 8px;
+			
+			.block {
+				.border-radius();
+				text-shadow: 0 1px 0 white;
+				border: 1px solid #EEE;
+				background-color: #F9F9F9;
+				padding: 6px;	
+				margin-leflt: 30px;
+			}
+		}
+	}
+}
+
 // Mixins
 footer {
 	text-align: right;
@@ -31,7 +61,7 @@ footer {
 }
 
 .box (@color: #ccc) when (iscolor(@color)){
-	.border-radius();
+	.border-radius(16px);
 	.box-shadow();
 	margin-bottom: 1em;
 	padding: 1em;
@@ -51,16 +81,6 @@ footer {
 	font-size: 160%;
 	font-weight: bold;
 }
-/*
-body {
-	background-image: url(https://twimg0-a.akamaihd.net/images/themes/theme5/bg.gif);
-	background-position: left 40px;
-	background-attachment: fixed;
-	background-repeat: repeat;
-	background-repeat: no-repeat;
-	background-color: #352726;
-}
-*/
 
 // Forms
 .mandatory {
@@ -81,21 +101,25 @@ body {
 }
 
 // Search
+
+#search-input {
+	display: inline-block;
+}
+
 #search-result {
-	.well();
+	margin-top: 1em;
 	#search-result-info {
 		color: @gray;
 		font-style: italic;
 	}
-	.row {
-		.result {
-			.location {
-				color: @colorLocation;
-			}
-			.teaser {
-				color: @grayDark;
-			}
-		}
+}
+.result {
+	margin-bottom: 1em;
+	.location {
+		color: @colorLocation;
+	}
+	.teaser {
+		color: @grayDark;
 	}
 }
 

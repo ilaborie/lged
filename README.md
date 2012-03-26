@@ -88,7 +88,6 @@ Update links on <http://localhost:8080/org.ilaborie.pineneedles/rest/links>
 	
 TODO / Ideas
 ------------
-* Custom background (photo? gradient) 
 * Better Error dialog
 
 ### Web Check
@@ -114,6 +113,7 @@ TODO / Ideas
 
 ### Administration
 
+* BUG: Update Shelf => empty fields...
 * Response Helper: BadRequest, Created, OK, source not found
 * Suffix all Entity
 * Better Error Message (Notice ?)
