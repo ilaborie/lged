@@ -112,8 +112,6 @@ TODO / Ideas
 
 ### Administration
 
-* Support autocompletion for tag
-
 * Extract favicon from links
 * Handle exclude Pattern for Folder Sources
 * Handle Field info for links source textarea, folder, tags

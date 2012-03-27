@@ -65,6 +65,20 @@ $(document).ready(function() {
 	$("#diaUpdateLink").on('shown', function() {
 		$("#source-update-link-tags").focus();
 	});
+	$("#source-create-link-tags").typeahead({
+		source : LocalGed.getSourceTag,
+		onselect: LocalGed.onCreateLinkTagSelect,
+		property: 'tag',
+		matcher: function() { return true; }
+	  , autoselect: false
+	});
+	$("#source-update-link-tags").typeahead({
+		source : LocalGed.getSourceTag,
+		onselect: LocalGed.onUpdateLinkTagSelect,
+		property: 'tag',
+		matcher: function() { return true; }
+	  , autoselect: false
+	});
 
 	// Breadcrumb
 	$(".returnToShelves").click(LocalGed.backShelves);
@@ -736,6 +750,45 @@ LocalGed.deleteLink = function() {
 		});
 	});
 };
+/**
+ * Select Tag
+ */
+LocalGed.getSourceTag = function (typeahead, query) {
+	var term = $.trim(query.split(',').pop());
+    if (term == '') return [];
+    var tags = new RestServiceJs('rest/tags');
+    tags.find(term, function(json) {
+    	var data = [];
+    	for (var i=0; i<json.length; i++) {
+    		data.push(json[i].tag);
+    	}
+    	typeahead.process(data);
+    });
+};
+/**
+ * Tag Selected
+ */
+LocalGed.onCreateLinkTagSelect = function(val, text, original_text) {
+	var terms = original_text.split(',');
+    terms.pop();
+    terms.push(text);
+    terms.push('');
+    $.each(terms, function(idx, val) { terms[idx] = $.trim(val); });
+    $('#source-create-link-tags').val(terms.join(', '));
+};
+/**
+ * 
+ */
+LocalGed.onUpdateLinkTagSelect = function(val, text, original_text) {
+	var terms = original_text.split(',');
+    terms.pop();
+    terms.push(text);
+    terms.push('');
+    $.each(terms, function(idx, val) { terms[idx] = $.trim(val); });
+    $('#source-update-link-tags').val(terms.join(', '));
+};
+
+
 // REST
 function RestServiceJs(newurl) {
 	this.myurl = newurl;
