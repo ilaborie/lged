@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,15 +38,15 @@ public class LinkEntry {
 	/** The link. */
 	@XmlAttribute
 	private String link;
-	
+
 	/** The host. */
 	@XmlElement
 	private String host;
-	
+
 	/** The title. */
 	@XmlElement
 	private String title;
-	
+
 	/** The date. */
 	@XmlElement
 	@Temporal(TemporalType.DATE)
@@ -54,8 +55,30 @@ public class LinkEntry {
 	/** The tags. */
 	@XmlElement
 	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name="tag")
+	@CollectionTable(name = "tag")
+	@Column(length = 2048)
 	private Set<String> tags;
+
+	/** The active. */
+	@XmlElement
+	private boolean active;
+	
+	/**
+	 * Instantiates a new link entry.
+	 */
+	public LinkEntry() {
+		super();
+    }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return this.link;
+	}
 
 	/**
 	 * Gets the display name.
@@ -175,8 +198,8 @@ public class LinkEntry {
 	 * @return the host
 	 */
 	public String getHost() {
-    	return host;
-    }
+		return host;
+	}
 
 	/**
 	 * Sets the host.
@@ -184,8 +207,8 @@ public class LinkEntry {
 	 * @param host the new host
 	 */
 	public void setHost(String host) {
-    	this.host = host;
-    }
+		this.host = host;
+	}
 
 	/**
 	 * Gets the title.
@@ -193,8 +216,8 @@ public class LinkEntry {
 	 * @return the title
 	 */
 	public String getTitle() {
-    	return title;
-    }
+		return title;
+	}
 
 	/**
 	 * Sets the title.
@@ -202,8 +225,8 @@ public class LinkEntry {
 	 * @param title the new title
 	 */
 	public void setTitle(String title) {
-    	this.title = title;
-    }
+		this.title = title;
+	}
 
 	/**
 	 * Gets the date.
@@ -211,8 +234,8 @@ public class LinkEntry {
 	 * @return the date
 	 */
 	public Calendar getDate() {
-    	return date;
-    }
+		return date;
+	}
 
 	/**
 	 * Sets the date.
@@ -220,7 +243,25 @@ public class LinkEntry {
 	 * @param date the new date
 	 */
 	public void setDate(Calendar date) {
-    	this.date = date;
-    }
+		this.date = date;
+	}
+
+	/**
+	 * Checks if is active.
+	 *
+	 * @return true, if is active
+	 */
+	public boolean isActive() {
+		return active;
+	}
+
+	/**
+	 * Sets the active.
+	 *
+	 * @param active the new active
+	 */
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 }

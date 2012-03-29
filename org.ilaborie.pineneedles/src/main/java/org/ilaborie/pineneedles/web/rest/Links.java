@@ -151,6 +151,7 @@ public class Links {
 
 		// Clean fields
 		LinkEntry entity = new LinkEntry();
+		entity.setActive(true);
 		entity.setId(id);
 		entity.setLink(lnk);
 		entity.setHost(this.extractHost(lnk));
@@ -234,6 +235,7 @@ public class Links {
 				url = line.trim();
 				// an entry
 				entry = new LinkEntry();
+				entry.setActive(true);
 				entry.setLink(url);
 				entry.setTags(tags);
 				entry.setId(this.createId());

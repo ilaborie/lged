@@ -20,10 +20,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Inheritance(strategy = InheritanceType.JOINED)
 @XmlRootElement(name = "source")
 @NamedQueries({
+		@NamedQuery(name = SourceEntity.QUERY_FIND_ALL, query = "From SourceEntity"),
 		@NamedQuery(name = SourceEntity.QUERY_FIND_BY_SHELF, query = "From SourceEntity s Where s.shelf = :shelf"),
 		@NamedQuery(name = SourceEntity.QUERY_DELETE_BY_SHELF, query = "Delete From SourceEntity s Where s.shelf = :shelf")})
 public class SourceEntity {
 
+	/** The Constant QUERY_FIND_ALL. */
+	public static final String QUERY_FIND_ALL = "Source.all";
+	
 	/** The Constant QUERY_FIND_ALL. */
 	public static final String QUERY_FIND_BY_SHELF = "Source.byShelf";
 	
@@ -48,6 +52,14 @@ public class SourceEntity {
 	@ManyToOne
 	@XmlIDREF
 	private ShelfEntity shelf;
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+	    return this.name;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

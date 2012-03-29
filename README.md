@@ -90,13 +90,11 @@ TODO / Ideas
 ------------
 
 ### Web Check
-
 * Check on Firefox
 * Check on Safari
 * Fail when not OK (no html5, not valid browser, no js, ...)
 
 ### Search
-
 * rest/search?q=
 * rest/search?q= + fq (on source, on shelve, field)
 * Faceting
@@ -105,20 +103,30 @@ TODO / Ideas
 
 * use field for Chrome search
 
-### Index
-
+## Index
 * rest/index/clear
 * rest/index/sync
 
 ### Administration
-
+#### UI
 * Extract favicon from links
-* Handle exclude Pattern for Folder Sources
 * Handle Field info for links source textarea, folder, tags
 * Disable 'Update' btn if not changed
 
+#### Tags
+* Add Tag support for source folder
+* Add managing Tag page
 * Tag Thesaurus
 
-### About
+#### Sources
+* Handle exclude Pattern for Folder Sources
+* Provide Twitter Source
+* Provide RSS/ATOM Source
 
+#### Monitoring
+* Add Monitor Indexing page
+* handle messages (Lvl, message, Error, Timestamp)
+
+
+### About
 * Shiny HTML5 animation (pine cone fall, + rotating)

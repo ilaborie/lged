@@ -33,6 +33,11 @@ public class ShelfEntity {
 	/** The description. */
 	@XmlElement
 	private String description;
+	
+	@Override
+	public String toString() {
+	    return this.name;
+	}
 
 	/*
 	 * (non-Javadoc)
