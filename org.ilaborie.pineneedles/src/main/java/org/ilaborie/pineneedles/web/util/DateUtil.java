@@ -50,7 +50,7 @@ public final class DateUtil {
 				}
 			}
 			if (result == null) {
-				throw new RuntimeException("Could not find a valid formatter for date: " + string);
+				throw new IllegalArgumentException("Could not find a valid formatter for date: " + string);
 			}
 		}
 		return result;

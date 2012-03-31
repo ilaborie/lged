@@ -1,5 +1,8 @@
 package org.ilaborie.pineneedles.web.model.elements;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
 
@@ -66,6 +69,14 @@ public class DynamicField implements Field {
 	@Override
 	public Object getValue(String val) {
 		return val;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.ilaborie.pineneedles.web.model.elements.Field#getValues(java.lang.String)
+	 */
+	@Override
+	public Collection<Object> getValues(String value) {
+		return Collections.singletonList(this.getValue(value));
 	}
 
 }

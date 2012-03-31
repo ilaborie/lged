@@ -33,6 +33,7 @@ public class SourceEntity {
 	
 	/** The Constant QUERY_DELETE_BY_SHELF. */
 	public static final String QUERY_DELETE_BY_SHELF = "Source.deleteByShelf";
+	
 
 	/** The id. */
 	@Id

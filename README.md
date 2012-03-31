@@ -95,17 +95,41 @@ TODO / Ideas
 * Fail when not OK (no html5, not valid browser, no js, ...)
 
 ### Search
-* rest/search?q=
-* rest/search?q= + fq (on source, on shelve, field)
-* Faceting
-* paging
-* opening docs
 
 * use field for Chrome search
+#### Basic Search
+* paging UI
+* empty
+* Highlight
+* Faceting
+  * Tag
+  * Shelf
+  * Source
+  
+* Alternate paging, <http://www.codinghorror.com/blog/2012/03/the-end-of-pagination.html>
 
-## Index
-* rest/index/clear
-* rest/index/sync
+#### Advanced search
+* Faceting
+  * date
+  * type
+* Shelf filtering
+* Source filtering
+* Tag filtering
+* Type filtering
+
+
+### Index
+
+#### Clear
+* delete all elements
+
+#### Scheduling
+
+#### Indexation
+* Split Keywords for update source elements
+* Bulk request ?
+* Node name
+* Configuration mapping (analyser)
 
 ### Administration
 #### UI
@@ -116,14 +140,17 @@ TODO / Ideas
 #### Tags
 * Add Tag support for source folder
 * Add managing Tag page
-* Tag Thesaurus
+* Thesaurus
+* Synonymes
 
 #### Sources
 * Handle exclude Pattern for Folder Sources
+* Handle Element status (Active/Inactive)
 * Provide Twitter Source
 * Provide RSS/ATOM Source
 
 #### Monitoring
+* Index status
 * Add Monitor Indexing page
 * handle messages (Lvl, message, Error, Timestamp)
 

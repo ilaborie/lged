@@ -113,13 +113,32 @@ footer {
 		font-style: italic;
 	}
 }
+#facets {
+	.facet {
+		margin-bottom : 1em;
+		li {
+			list-style-type: none;
+			font-size: @baseFontSize;
+		  	font-weight: bold; 
+		}
+	}
+}
+
 .result {
 	margin-bottom: 1em;
+	h3 {
+		display: inline-block;
+	}
+	.label {
+		display: inline-block;
+	}
 	.location {
 		color: @colorLocation;
+		padding-left: 1em;
 	}
 	.teaser {
 		color: @grayDark;
+		padding-left: 1em;
 	}
 }
 

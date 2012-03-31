@@ -37,15 +37,13 @@
 		<!-- Utils -->
 		<guava.version>11.0.2</guava.version>
 
-		<!-- Indexing with SolR -->
-		<solr.version>3.5.0</solr.version>
+		<!-- Indexing with elasticsearch -->
+		<!--<elasticsearch.version>0.20.0.Beta1-SNAPSHOT</elasticsearch.version>-->
+		<elasticsearch.version>0.19.1</elasticsearch.version>
+		<joda-time.version>1.6.2</joda-time.version>
 
 		<!-- Tika -->
 		<tika.version>1.1</tika.version>
-		<!--<poi.version>3.8-beta5</poi.version>
-		<pdfbox.version>1.6.0</pdfbox.version>
-		<xmlbeans.version>2.3.0</xmlbeans.version>
-		-->
 
 		<!-- Maven Plugins -->
 		<maven.compiler.version>2.3.2</maven.compiler.version>
@@ -269,104 +267,26 @@
 				<version>${guava.version}</version>
 			</dependency>
 
-			<!-- Solr -->
+			<!-- elasticsearch -->
 			<dependency>
-				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-solrj</artifactId>
-				<version>${solr.version}</version>
+				<groupId>org.elasticsearch</groupId>
+				<artifactId>elasticsearch</artifactId>
+				<version>${elasticsearch.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-dataimporthandler</artifactId>
-				<version>${solr.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-dataimporthandler-extras</artifactId>
-				<version>${solr.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-core</artifactId>
-				<version>${solr.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-velocity</artifactId>
-				<version>${solr.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-langid</artifactId>
-				<version>${solr.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.solr</groupId>
-				<artifactId>solr-cell</artifactId>
-				<version>${solr.version}</version>
-			</dependency>
+	        <dependency>
+	            <groupId>joda-time</groupId>
+	            <artifactId>joda-time</artifactId>
+	            <!-- joda 2.0 moved to using volatile fields for datetime, which hurts performance for facets! -->
+	            <version>${joda-time.version}</version>
+	            <scope>compile</scope>
+	        </dependency>
 
 			<!-- Tika -->
 			<dependency>
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-parsers</artifactId>
 				<version>${tika.version}</version>
-				<!--
-				<exclusions>
-					<exclusion>
-						<groupId>org.apache.poi</groupId>
-						<artifactId>poi</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.apache.poi</groupId>
-						<artifactId>poi-scratchpad</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.apache.poi</groupId>
-						<artifactId>poi-ooxml</artifactId>
-					</exclusion>
-				</exclusions>
-				-->
 			</dependency>
-			<!-- POI 
-			<dependency>
-				<groupId>org.apache.poi</groupId>
-				<artifactId>poi</artifactId>
-				<version>${poi.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.poi</groupId>
-				<artifactId>poi-scratchpad</artifactId>
-				<version>${poi.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.poi</groupId>
-				<artifactId>poi-ooxml</artifactId>
-				<version>${poi.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.pdfbox</groupId>
-				<artifactId>pdfbox</artifactId>
-				<version>${pdfbox.version}</version>
-				<exclusions>
-					<exclusion>
-						<artifactId>commons-logging</artifactId>
-						<groupId>commons-logging</groupId>
-					</exclusion>
-				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.xmlbeans</groupId>
-				<artifactId>xmlbeans</artifactId>
-				<version>${xmlbeans.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>stax</groupId>
-						<artifactId>stax-api</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
--->
 			<!-- JavaEE 6 -->
 			<dependency>
 				<groupId>org.jboss.spec</groupId>
@@ -556,6 +476,7 @@
 
 	<!-- Modules -->
 	<modules>
+		<module>elasticsearch</module>
 		<module>org.ilaborie.pineneedles</module>
 	</modules>
 </project>

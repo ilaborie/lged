@@ -26,8 +26,8 @@ import javax.ws.rs.core.UriInfo;
 import org.ilaborie.pineneedles.web.model.Link;
 import org.ilaborie.pineneedles.web.model.LinksSource;
 import org.ilaborie.pineneedles.web.model.entity.LinkEntry;
-import org.ilaborie.pineneedles.web.model.entity.ShelfEntity;
 import org.ilaborie.pineneedles.web.model.entity.LinksSourceEntity;
+import org.ilaborie.pineneedles.web.model.entity.ShelfEntity;
 import org.ilaborie.pineneedles.web.util.ResponseBuilder;
 import org.ilaborie.pineneedles.web.util.func.Capitalize;
 import org.slf4j.Logger;
@@ -197,8 +197,7 @@ public class Links {
 		try {
 			LinkEntry entity = this.em.find(LinkEntry.class, id);
 
-			// TODO use a NamedQuery
-			TypedQuery<LinksSourceEntity> query = this.em.createQuery("From SourceLinks s Where :link Member Of s.links ", LinksSourceEntity.class);
+			TypedQuery<LinksSourceEntity> query = this.em.createNamedQuery(LinksSourceEntity.QUERY_FIND_CONTAINS_LINK, LinksSourceEntity.class);
 			query.setParameter("link", entity);
 			LinksSourceEntity source = query.getSingleResult();
 

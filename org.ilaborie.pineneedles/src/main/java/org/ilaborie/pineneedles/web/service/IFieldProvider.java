@@ -25,48 +25,4 @@ public interface IFieldProvider {
 	 */
 	Field getFieldByMetadata(String name);
 
-	// PineNeedles fields
-	
-	/**
-	 * Gets the full text field.
-	 *
-	 * @return the full text field
-	 */
-	Field getFullTextField();
-
-	/**
-	 * Gets the tag field.
-	 *
-	 * @return the tag field
-	 */
-	Field getTagField();
-
-	/**
-	 * Gets the source field.
-	 *
-	 * @return the source field
-	 */
-	Field getSourceField();
-
-	/**
-	 * Gets the shelf field.
-	 *
-	 * @return the shelf field
-	 */
-	Field getShelfField();
-	
-	/**
-	 * Gets the checksum field.
-	 *
-	 * @return the checksum field
-	 */
-	Field getChecksumField();
-	
-	/**
-	 * Gets the type field.
-	 *
-	 * @return the type field
-	 */
-	Field getTypeField();
-
 }

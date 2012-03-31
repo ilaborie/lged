@@ -30,15 +30,32 @@
 	</script>
 	<!-- Search Result -->
 	<script id="docs" type="text/html">
-		<div id="search-result-info" class="span12">Found {{results}} documents in {{time}}ms</div>
 		<div class="row">
-			{{#docs}}
-			<div id="doc-{{id}}" class="span10 offset1 result">
-				<h3><a href="{{link}}">{{title}}</a></h3>
-				<div class="location">{{location}}</div>
-				<div class="teaser">{{teaser}}</div>					
+			<div id="facets" class="span2">
+				{{#facets}}
+				<div id="facet-{{name}}" class="block facet"> 
+					<h3>{{name}}</h3>
+					<ul>
+						{{#entries}}
+						<li><span class="badge">{{count}}</span>&nbsp;<a href="">{{value}}</a></li>
+						{{/entries}}
+					</ul>
+				</div>
+				{{/facets}}
 			</div>
-			{{/docs}}
+			<div id="docs" class="block span9">
+				<div id="search-result-info" class="span12">Found {{results}} documents in {{displayTime}}</div>
+				{{#docs}}
+				<div id="doc-{{id}}" class="result">
+					<h3><a href="{{location}}">{{title}}</a>&nbsp;</h3>
+					{{#tags}}
+					<div class="label label-inverse"><i class="icon-tag icon-white"></i> {{.}}</div>
+					{{/tags}}
+					<div class="location">{{location}}</div>
+					<div class="teaser">{{teaser}}</div>					
+				</div>
+				{{/docs}}
+			</div>
 		</div>
 	</script>
 	<!--  Shelf -->
@@ -142,7 +159,7 @@
 					<i class="icon-search icon-white"></i>
 				</button>
 		</div>
-		<div id="search-result" class="block hidden">
+		<div id="search-result" class="hidden">
 				<!-- Fill by Javascript -->
 		</div>
 	</div>

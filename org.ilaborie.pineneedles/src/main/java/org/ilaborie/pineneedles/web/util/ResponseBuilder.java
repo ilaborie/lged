@@ -5,7 +5,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.ilaborie.pineneedles.web.model.Message;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ResponseBuilder.
  */

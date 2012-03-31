@@ -3,6 +3,7 @@ package org.ilaborie.pineneedles.web.model.elements;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
@@ -15,6 +16,7 @@ import org.ilaborie.pineneedles.web.service.IFieldProvider;
 import org.ilaborie.pineneedles.web.util.Sha1Utils;
 
 import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.io.Closeables;
 
@@ -72,13 +74,15 @@ public class LinkElement implements IIndexableElement {
 	public String getId() {
 		return this.link.getId();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.ilaborie.pineneedles.web.model.elements.IIndexableElement#isActive()
 	 */
 	@Override
 	public boolean isActive() {
-	    return this.link.isActive();
+		return this.link.isActive();
 	}
 
 	/*
@@ -106,41 +110,16 @@ public class LinkElement implements IIndexableElement {
 
 				// Handle metadata
 				Field field;
-				String value;
 				for (String name : metadata.names()) {
 					field = fieldProvider.getFieldByMetadata(name);
-					if (metadata.isMultiValued(name)) {
-						for (String val : metadata.getValues(name)) {
-							this.values.put(field, field.getValue(val));
-						}
-					} else {
-						value = metadata.get(name);
-						this.values.put(field, field.getValue(value));
-					}
+					this.values.putAll(field, this.extractValues(name, metadata, field));
 				}
 
 				// Handle Full Text
-				field = fieldProvider.getFullTextField();
-				this.values.put(field, plainText);
+				this.values.put(BasicField.FULL_TEXT, plainText);
 
-				// PineNeedles Field
-
-				// Tag
-				for (String tag : this.link.getTags()) {
-					this.values.put(fieldProvider.getTagField(), tag);
-				}
-
-				// Source
-				this.values.put(fieldProvider.getSourceField(), source.getId());
-
-				// Shelf
-				this.values.put(fieldProvider.getShelfField(), source.getShelf().getId());
-
-				// Type
-				this.values.put(fieldProvider.getTypeField(), Field.TYPE_URL);
-
-				// Checksum
-				this.values.put(fieldProvider.getChecksumField(), Sha1Utils.sha1(plainText));
+				// PineNeedles Fields
+				this.addBasicFields(source, plainText);
 
 			} catch (Exception e) {
 				this.link.setActive(false);
@@ -150,5 +129,77 @@ public class LinkElement implements IIndexableElement {
 			}
 		}
 		return this.values;
+	}
+
+	/**
+	 * Adds the basic fields.
+	 *
+	 * @param source the source
+	 * @param plainText the plain text
+	 */
+	private void addBasicFields(SourceEntity source, String plainText) {
+	    // Location
+	    this.values.put(BasicField.LOCATION, this.link.getLink());
+
+	    // Teaser
+	    this.values.put(BasicField.TEASER, this.getTeaser(plainText));
+
+	    // Tag
+	    for (String tag : this.link.getTags()) {
+	    	this.values.put(BasicField.TAG, tag);
+	    }
+
+	    // Source
+	    this.values.put(BasicField.SOURCE, source.getId());
+
+	    // Shelf
+	    this.values.put(BasicField.SHELF, source.getShelf().getId());
+
+	    // Type
+	    this.values.put(BasicField.TYPE, Field.TYPE_URL);
+
+	    // Checksum
+	    this.values.put(BasicField.CHECKSUM, Sha1Utils.sha1(plainText));
+    }
+
+	/**
+	 * Extract values.
+	 *
+	 * @param name the name
+	 * @param metadata the metadata
+	 * @param field the field
+	 * @return the list
+	 */
+	private List<Object> extractValues(String name, Metadata metadata, Field field) {
+		List<Object> lst = Lists.newArrayList();
+		String value;
+		if (metadata.isMultiValued(name)) {
+			for (String val : metadata.getValues(name)) {
+				lst.addAll(field.getValues(val));
+			}
+		} else {
+			value = metadata.get(name);
+			lst.addAll(field.getValues(value));
+		}
+
+		return lst;
+	}
+
+	/**
+	 * Gets the teaser.
+	 *
+	 * @param plainText the plain text
+	 * @return the teaser
+	 */
+	private String getTeaser(String plainText) {
+		String teaser = null;
+		if (plainText != null) {
+			if (plainText.length() > Field.TEASER_LENGTH) {
+				teaser = plainText.substring(0, Field.TEASER_LENGTH) + "...";
+			} else {
+				teaser = plainText;
+			}
+		}
+		return teaser;
 	}
 }

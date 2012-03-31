@@ -27,3 +27,7 @@ Servers/
 
 # Less
 *.css
+
+# ElasticSearch
+elasticsearch/test-output/
+
